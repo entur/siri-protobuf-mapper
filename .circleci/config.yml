@@ -1,0 +1,76 @@
+version: 2
+aliases:
+  - &post_build
+    name: Trigger downstream builds
+    command: |
+      echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
+      echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
+      echo 'export GITHUB_TOKEN="$GITHUB_TOKEN"' >> $BASH_ENV
+jobs:
+  test:
+    docker:
+      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
+        auth:
+          username: _json_key
+          password: $GCLOUD_SERVICE_KEY
+    environment:
+      MAVEN_OPTS: -Xmx2G -Xms2G
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-dependencies-{{ checksum "pom.xml" }}
+            - cache-dependencies-static
+      - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -s /tools/m2/settings.xml
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: cache-dependencies-static
+      # Cannot use -o because of snapshot dependencies.
+      - run: mvn verify -s /tools/m2/settings.xml
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
+  deploy-artifactory:
+    docker:
+      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
+        auth:
+          username: _json_key
+          password: $GCLOUD_SERVICE_KEY
+    environment:
+      MAVEN_OPTS: -Xmx2G -Xms2G
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-dependencies-{{ checksum "pom.xml" }}
+            - cache-dependencies-static
+      - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -s /tools/m2/settings.xml
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: cache-dependencies-static
+      # Cannot use -o because of snapshot dependencies.
+      - run: mvn deploy -s /tools/m2/settings.xml -DskipTests
+      - run: *post_build
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - test:
+          context: org-carbon
+      - deploy-artifactory:
+          context: org-carbon
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
