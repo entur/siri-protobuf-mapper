@@ -8,31 +8,27 @@ import uk.org.siri.siri20.DataReadyRequestStructure;
 import uk.org.siri.siri20.Siri;
 import uk.org.siri.www.siri.SiriType;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.StringWriter;
 import java.time.ZonedDateTime;
 
 import static org.entur.protobuf.mapper.Helper.formatXml;
 import static org.entur.protobuf.mapper.Helper.readFile;
-import static org.entur.protobuf.mapper.Helper.writeFile;
 import static org.junit.Assert.assertEquals;
 import static org.rutebanken.siri20.util.SiriXml.parseXml;
 
 public class MapperTest {
 
-    private static String xml;
+    private static String et_xml;
+    private static String vm_xml;
 
 
     SiriMapper mapper = new SiriMapper();
 
     @BeforeClass
-    public static void init() throws IOException, JAXBException {
-        xml = readFile("src/test/resources/et.xml");
+    public static void init() throws IOException {
+        et_xml = readFile("src/test/resources/et.xml");
+        vm_xml = readFile("src/test/resources/vm.xml");
     }
 
     @Test
@@ -52,9 +48,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapServiceDelivery() throws Exception {
+    public void testMapETServiceDelivery() throws Exception {
 
-        Siri parsedSiri = parseXml(xml);
+        Siri parsedSiri = parseXml(et_xml);
 
         long t1 = System.currentTimeMillis();
         SiriType pbfSiri = mapper.map(parsedSiri);
@@ -71,10 +67,31 @@ public class MapperTest {
         final String mappedXmlContents = formatXml(mappedSiri, Boolean.TRUE);
         final String originalXmlContents = formatXml(parsedSiri, Boolean.TRUE);
 
-//        writeFile("src/test/resources/et-mapped.xml", formatXml(mappedSiri, Boolean.TRUE));
-//        writeFile("src/test/resources/et-parsed.xml", formatXml(parsedSiri, Boolean.TRUE));
+        assertEquals(originalXmlContents, et_xml);
+        assertEquals(originalXmlContents, mappedXmlContents);
+    }
 
-        assertEquals(originalXmlContents, xml);
+    @Test
+    public void testMapVMServiceDelivery() throws Exception {
+
+        Siri parsedSiri = parseXml(vm_xml);
+
+        long t1 = System.currentTimeMillis();
+        SiriType pbfSiri = mapper.map(parsedSiri);
+        long t2 = System.currentTimeMillis();
+
+        JsonFormat.Printer jsonPrinter = JsonFormat.printer();
+
+        String json = jsonPrinter.print(pbfSiri);
+
+        long t3 = System.currentTimeMillis();
+        Siri mappedSiri = mapper.map(pbfSiri);
+        long t4 = System.currentTimeMillis();
+
+        final String mappedXmlContents = formatXml(mappedSiri, Boolean.TRUE);
+        final String originalXmlContents = formatXml(parsedSiri, Boolean.TRUE);
+
+        assertEquals(originalXmlContents, vm_xml);
         assertEquals(originalXmlContents, mappedXmlContents);
     }
 

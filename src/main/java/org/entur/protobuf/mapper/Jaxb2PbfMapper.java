@@ -2,12 +2,12 @@ package org.entur.protobuf.mapper;
 
 import org.entur.protobuf.mapper.siri.CommonMapper;
 import org.entur.protobuf.mapper.siri.EstimatedTimetablePbf2SiriMapper;
+import org.entur.protobuf.mapper.siri.VehicleMonitoringSiri2PbfMapper;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
-import uk.org.siri.siri20.RequestorRef;
 import uk.org.siri.siri20.ServiceDelivery;
 import uk.org.siri.siri20.Siri;
+import uk.org.siri.siri20.VehicleMonitoringDeliveryStructure;
 import uk.org.siri.www.siri.DataReadyRequestStructure;
-import uk.org.siri.www.siri.ParticipantRefStructure;
 import uk.org.siri.www.siri.ServiceDeliveryType;
 import uk.org.siri.www.siri.SiriType;
 
@@ -36,12 +36,7 @@ class Jaxb2PbfMapper extends CommonMapper {
 
     private static ServiceDeliveryType map(ServiceDelivery serviceDelivery) {
         final ServiceDeliveryType.Builder builder = ServiceDeliveryType.newBuilder();
-        final List<EstimatedTimetableDeliveryStructure> estimatedTimetableDeliveries = serviceDelivery.getEstimatedTimetableDeliveries();
-        if (estimatedTimetableDeliveries != null) {
-            for (EstimatedTimetableDeliveryStructure estimatedTimetableDelivery : estimatedTimetableDeliveries) {
-                builder.addEstimatedTimetableDelivery(EstimatedTimetablePbf2SiriMapper.map(estimatedTimetableDelivery));
-            }
-        }
+
         builder.setResponseTimestamp(map(serviceDelivery.getResponseTimestamp()));
         if (serviceDelivery.getProducerRef() != null) {
             builder.setProducerRef(map(serviceDelivery.getProducerRef()));
@@ -50,12 +45,23 @@ class Jaxb2PbfMapper extends CommonMapper {
         if (serviceDelivery.isMoreData() != null) {
             builder.setMoreData(serviceDelivery.isMoreData());
         }
-        return builder.build();
-    }
 
-    private static ParticipantRefStructure map(RequestorRef producerRef) {
-        ParticipantRefStructure.Builder builder = ParticipantRefStructure.newBuilder();
-        builder.setValue(producerRef.getValue());
+        // SIRI ET
+        final List<EstimatedTimetableDeliveryStructure> estimatedTimetableDeliveries = serviceDelivery.getEstimatedTimetableDeliveries();
+        if (estimatedTimetableDeliveries != null) {
+            for (EstimatedTimetableDeliveryStructure estimatedTimetableDelivery : estimatedTimetableDeliveries) {
+                builder.addEstimatedTimetableDelivery(EstimatedTimetablePbf2SiriMapper.map(estimatedTimetableDelivery));
+            }
+        }
+
+        // SIRI VM
+        final List<VehicleMonitoringDeliveryStructure> vehicleMonitoringDeliveries = serviceDelivery.getVehicleMonitoringDeliveries();
+        if (estimatedTimetableDeliveries != null) {
+            for (VehicleMonitoringDeliveryStructure vehicleMonitoringDeliveryStructure : vehicleMonitoringDeliveries) {
+                builder.addVehicleMonitoringDelivery(VehicleMonitoringSiri2PbfMapper.map(vehicleMonitoringDeliveryStructure));
+            }
+        }
+
         return builder.build();
     }
 

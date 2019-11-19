@@ -2,15 +2,13 @@ package org.entur.protobuf.mapper;
 
 import org.entur.protobuf.mapper.siri.CommonMapper;
 import org.entur.protobuf.mapper.siri.EstimatedTimetableSiri2PbfMapper;
+import org.entur.protobuf.mapper.siri.VehicleMonitoringPbf2SiriMapper;
 import uk.org.siri.siri20.DataReadyRequestStructure;
-import uk.org.siri.siri20.RequestorRef;
 import uk.org.siri.siri20.ServiceDelivery;
 import uk.org.siri.siri20.Siri;
-import uk.org.siri.www.siri.ParticipantRefStructure;
 import uk.org.siri.www.siri.ServiceDeliveryType;
 import uk.org.siri.www.siri.SiriType;
-
-import java.util.List;
+import uk.org.siri.www.siri.VehicleMonitoringDeliveryStructure;
 
 class Pbf2JaxbMapper extends CommonMapper {
 
@@ -35,12 +33,18 @@ class Pbf2JaxbMapper extends CommonMapper {
 
     private static ServiceDelivery map(ServiceDeliveryType serviceDelivery) {
         final ServiceDelivery mapped = new ServiceDelivery();
-        final List<uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure> estimatedTimetableDeliveryList = serviceDelivery.getEstimatedTimetableDeliveryList();
-        if (estimatedTimetableDeliveryList != null) {
-            for (uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure estimatedTimetableDeliveryStructure : estimatedTimetableDeliveryList) {
+        
+        if (serviceDelivery.getEstimatedTimetableDeliveryList() != null) {
+            for (uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure estimatedTimetableDeliveryStructure : serviceDelivery.getEstimatedTimetableDeliveryList()) {
                 mapped.getEstimatedTimetableDeliveries().add(EstimatedTimetableSiri2PbfMapper.map(estimatedTimetableDeliveryStructure));
             }
         }
+        if (serviceDelivery.getVehicleMonitoringDeliveryList() != null) {
+            for (VehicleMonitoringDeliveryStructure vehicleMonitoringDeliveryStructure : serviceDelivery.getVehicleMonitoringDeliveryList()) {
+                mapped.getVehicleMonitoringDeliveries().add(VehicleMonitoringPbf2SiriMapper.map(vehicleMonitoringDeliveryStructure));
+            }
+        }
+        
         if (serviceDelivery.hasResponseTimestamp()) {
             mapped.setResponseTimestamp(map(serviceDelivery.getResponseTimestamp()));
         }
@@ -54,9 +58,4 @@ class Pbf2JaxbMapper extends CommonMapper {
         return mapped;
     }
 
-    private static RequestorRef map(ParticipantRefStructure producerRef) {
-        final RequestorRef mapped = new RequestorRef();
-        mapped.setValue(producerRef.getValue());
-        return mapped;
-    }
 }

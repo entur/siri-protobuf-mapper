@@ -1,8 +1,6 @@
 package org.entur.protobuf.mapper.siri;
 
-import uk.org.siri.siri20.DataFrameRefStructure;
 import uk.org.siri.siri20.DatedVehicleJourneyRef;
-import uk.org.siri.siri20.DestinationRef;
 import uk.org.siri.siri20.EstimatedCall;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri20.EstimatedVehicleJourney;
@@ -16,17 +14,11 @@ import uk.org.siri.siri20.SituationRef;
 import uk.org.siri.siri20.SituationSimpleRef;
 import uk.org.siri.siri20.VehicleJourneyRef;
 import uk.org.siri.siri20.VehicleModesEnumeration;
-import uk.org.siri.siri20.VehicleRef;
-import uk.org.siri.www.siri.BlockRefStructure;
 import uk.org.siri.www.siri.DatedVehicleJourneyRefStructure;
-import uk.org.siri.www.siri.DestinationRefStructure;
-import uk.org.siri.www.siri.DirectionRefStructure;
 import uk.org.siri.www.siri.EstimatedCallStructure;
 import uk.org.siri.www.siri.EstimatedVehicleJourneyStructure;
-import uk.org.siri.www.siri.FramedVehicleJourneyRefStructure;
 import uk.org.siri.www.siri.GroupOfLinesRefStructure;
 import uk.org.siri.www.siri.JourneyPatternRefStructure;
-import uk.org.siri.www.siri.JourneyPlaceRefStructure;
 import uk.org.siri.www.siri.QuayRefStructure;
 import uk.org.siri.www.siri.RecordedCallStructure;
 import uk.org.siri.www.siri.RouteRefStructure;
@@ -36,7 +28,6 @@ import uk.org.siri.www.siri.SituationRefStructure;
 import uk.org.siri.www.siri.SituationSimpleRefStructure;
 import uk.org.siri.www.siri.StopAssignmentStructure;
 import uk.org.siri.www.siri.VehicleJourneyRefStructure;
-import uk.org.siri.www.siri.VehicleRefStructure;
 
 public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
 
@@ -233,18 +224,6 @@ public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
         return builder;
     }
 
-    private static DestinationRefStructure.Builder map(DestinationRef destinationRef) {
-        DestinationRefStructure.Builder builder = DestinationRefStructure.newBuilder();
-        builder.setValue(destinationRef.getValue());
-        return builder;
-    }
-
-    private static JourneyPlaceRefStructure.Builder map(uk.org.siri.siri20.JourneyPlaceRefStructure originRef) {
-        JourneyPlaceRefStructure.Builder builder = JourneyPlaceRefStructure.newBuilder();
-        builder.setValue(originRef.getValue());
-        return builder;
-    }
-
     private static ServiceFeatureRefStructure.Builder map(ServiceFeatureRef serviceFeatureRef) {
         ServiceFeatureRefStructure.Builder builder = ServiceFeatureRefStructure.newBuilder();
         builder.setValue(serviceFeatureRef.getValue());
@@ -417,27 +396,4 @@ public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
         return builder;
     }
 
-    private static VehicleRefStructure.Builder map(VehicleRef vehicleRef) {
-        return VehicleRefStructure.newBuilder().setValue(vehicleRef.getValue());
-    }
-
-    private static BlockRefStructure.Builder map(uk.org.siri.siri20.BlockRefStructure blockRef) {
-        return BlockRefStructure.newBuilder().setValue(blockRef.getValue());
-    }
-
-    private static FramedVehicleJourneyRefStructure.Builder map(uk.org.siri.siri20.FramedVehicleJourneyRefStructure framedVehicleJourneyRef) {
-        return FramedVehicleJourneyRefStructure.newBuilder()
-                .setDataFrameRef(map(framedVehicleJourneyRef.getDataFrameRef()))
-                .setDatedVehicleJourneyRef(framedVehicleJourneyRef.getDatedVehicleJourneyRef());
-    }
-
-    private static uk.org.siri.www.siri.DataFrameRefStructure.Builder map(DataFrameRefStructure dataFrameRef) {
-        return uk.org.siri.www.siri.DataFrameRefStructure.newBuilder()
-                .setValue(dataFrameRef.getValue());
-    }
-
-    private static DirectionRefStructure.Builder map(uk.org.siri.siri20.DirectionRefStructure directionRef) {
-        return DirectionRefStructure.newBuilder()
-                .setValue(directionRef.getValue());
-    }
 }

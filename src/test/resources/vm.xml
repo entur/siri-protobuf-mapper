@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Siri version="2.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">
+    <ServiceDelivery>
+        <ResponseTimestamp>2019-11-19T10:36:40.858999+01:00</ResponseTimestamp>
+        <ProducerRef>ENT</ProducerRef>
+        <MoreData>true</MoreData>
+        <VehicleMonitoringDelivery version="2.0">
+            <ResponseTimestamp>2019-11-19T10:36:40.859007+01:00</ResponseTimestamp>
+            <VehicleActivity>
+                <RecordedAtTime>2019-11-19T10:36:01.855+01:00</RecordedAtTime>
+                <ItemIdentifier>702056_20c2e3a3-1659-41d3-b1a2-1411978b1d43_561:108:4-10805</ItemIdentifier>
+                <ValidUntilTime>2019-11-19T10:46:01.855+01:00</ValidUntilTime>
+                <ProgressBetweenStops>
+                    <LinkDistance>653.0</LinkDistance>
+                    <Percentage>94.49</Percentage>
+                </ProgressBetweenStops>
+                <MonitoredVehicleJourney>
+                    <LineRef>RUT:Line:561</LineRef>
+                    <DirectionRef>1</DirectionRef>
+                    <FramedVehicleJourneyRef>
+                        <DataFrameRef>2019-11-19</DataFrameRef>
+                        <DatedVehicleJourneyRef>561:108:4-10805</DatedVehicleJourneyRef>
+                    </FramedVehicleJourneyRef>
+                    <PublishedLineName>561</PublishedLineName>
+                    <OperatorRef>Nobina</OperatorRef>
+                    <OriginRef>NSR:Quay:10162</OriginRef>
+                    <OriginName>Seiersten</OriginName>
+                    <DestinationRef>NSR:Quay:10226</DestinationRef>
+                    <DestinationName>Nesoddtangen</DestinationName>
+                    <OriginAimedDepartureTime>2019-11-19T10:05:00+01:00</OriginAimedDepartureTime>
+                    <DestinationAimedArrivalTime>2019-11-19T10:53:00+01:00</DestinationAimedArrivalTime>
+                    <Monitored>true</Monitored>
+                    <InCongestion>false</InCongestion>
+                    <DataSource>RUT</DataSource>
+                    <VehicleLocation srsName="real">
+                        <Longitude>10.690417</Longitude>
+                        <Latitude>59.80625</Latitude>
+                    </VehicleLocation>
+                    <Delay>PT66S</Delay>
+                    <BlockRef>Test:1234:12</BlockRef>
+                    <VehicleRef>4321</VehicleRef>
+                    <MonitoredCall>
+                        <StopPointRef>NSR:Quay:5757</StopPointRef>
+                        <StopPointName>Nesodden kirke</StopPointName>
+                        <VehicleAtStop>false</VehicleAtStop>
+                        <DestinationDisplay>Nesoddtangen</DestinationDisplay>
+                    </MonitoredCall>
+                    <IsCompleteStopSequence>false</IsCompleteStopSequence>
+                </MonitoredVehicleJourney>
+            </VehicleActivity>
+        </VehicleMonitoringDelivery>
+    </ServiceDelivery>
+</Siri>

@@ -1,53 +1,19 @@
 package org.entur.protobuf.mapper.siri;
 
-import com.google.protobuf.Any;
-import org.w3.www.xml._1998.namespace.LangType;
-import org.w3c.dom.Element;
-import uk.org.siri.siri20.BlockRefStructure;
-import uk.org.siri.siri20.DataFrameRefStructure;
-import uk.org.siri.siri20.DatedVehicleJourneyRef;
-import uk.org.siri.siri20.DestinationRef;
-import uk.org.siri.siri20.DirectionRefStructure;
 import uk.org.siri.siri20.EstimatedCall;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri20.EstimatedVehicleJourney;
-import uk.org.siri.siri20.Extensions;
-import uk.org.siri.siri20.FramedVehicleJourneyRefStructure;
-import uk.org.siri.siri20.GroupOfLinesRefStructure;
-import uk.org.siri.siri20.JourneyPatternRef;
-import uk.org.siri.siri20.JourneyPlaceRefStructure;
-import uk.org.siri.siri20.NaturalLanguagePlaceNameStructure;
-import uk.org.siri.siri20.NaturalLanguageStringStructure;
-import uk.org.siri.siri20.OperatorRefStructure;
 import uk.org.siri.siri20.QuayRefStructure;
 import uk.org.siri.siri20.RecordedCall;
-import uk.org.siri.siri20.RouteRefStructure;
-import uk.org.siri.siri20.ServiceFeatureRef;
-import uk.org.siri.siri20.SimpleContactStructure;
-import uk.org.siri.siri20.SituationRef;
-import uk.org.siri.siri20.SituationSimpleRef;
 import uk.org.siri.siri20.StopAssignmentStructure;
-import uk.org.siri.siri20.StopPointRef;
-import uk.org.siri.siri20.VehicleJourneyRef;
-import uk.org.siri.siri20.VehicleRef;
-import uk.org.siri.www.siri.DatedVehicleJourneyRefStructure;
-import uk.org.siri.www.siri.DestinationRefStructure;
 import uk.org.siri.www.siri.EstimatedCallStructure;
 import uk.org.siri.www.siri.EstimatedVehicleJourneyStructure;
 import uk.org.siri.www.siri.EstimatedVersionFrameStructure;
-import uk.org.siri.www.siri.ExtensionsStructure;
-import uk.org.siri.www.siri.JourneyPatternRefStructure;
 import uk.org.siri.www.siri.RecordedCallStructure;
 import uk.org.siri.www.siri.ServiceFeatureRefStructure;
 import uk.org.siri.www.siri.SituationRefStructure;
-import uk.org.siri.www.siri.SituationSimpleRefStructure;
-import uk.org.siri.www.siri.StopPointRefStructure;
-import uk.org.siri.www.siri.VehicleJourneyRefStructure;
 import uk.org.siri.www.siri.VehicleModesEnumeration;
-import uk.org.siri.www.siri.VehicleRefStructure;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -194,79 +160,6 @@ public class EstimatedTimetableSiri2PbfMapper extends CommonMapper {
         }
 
         mapped.setIsCompleteStopSequence(vehicleJourney.getIsCompleteStopSequence());
-        return mapped;
-    }
-
-    private static VehicleJourneyRef map(VehicleJourneyRefStructure vehicleJourneyRef) {
-        VehicleJourneyRef mapped = new VehicleJourneyRef();
-        mapped.setValue(vehicleJourneyRef.getValue());
-        return mapped;
-    }
-
-    private static SituationRef map(SituationRefStructure situationRefStructure) {
-        SituationRef mapped = new SituationRef();
-        mapped.setSituationSimpleRef(map(situationRefStructure.getSituationSimpleRef()));
-        return mapped;
-    }
-
-    private static SituationSimpleRef map(SituationSimpleRefStructure situationSimpleRef) {
-        SituationSimpleRef mapped = new SituationSimpleRef();
-        mapped.setValue(situationSimpleRef.getValue());
-        return mapped;
-    }
-
-    private static SimpleContactStructure map(uk.org.siri.www.siri.SimpleContactStructure publicContact) {
-        SimpleContactStructure mapped = new SimpleContactStructure();
-        mapped.setPhoneNumber(publicContact.getPhoneNumber());
-        mapped.setUrl(publicContact.getUrl());
-        return mapped;
-    }
-
-    private static GroupOfLinesRefStructure map(uk.org.siri.www.siri.GroupOfLinesRefStructure groupOfLinesRef) {
-        GroupOfLinesRefStructure mapped = new GroupOfLinesRefStructure();
-        mapped.setValue(groupOfLinesRef.getValue());
-        return mapped;
-    }
-
-    private static RouteRefStructure map(uk.org.siri.www.siri.RouteRefStructure routeRef) {
-        RouteRefStructure mapped = new RouteRefStructure();
-        mapped.setValue(routeRef.getValue());
-        return mapped;
-    }
-
-    private static JourneyPatternRef map(JourneyPatternRefStructure journeyPatternRef) {
-        JourneyPatternRef mapped = new JourneyPatternRef();
-        mapped.setValue(journeyPatternRef.getValue());
-        return mapped;
-    }
-
-    private static DestinationRef map(DestinationRefStructure destinationRef) {
-        final DestinationRef mapped = new DestinationRef();
-        mapped.setValue(destinationRef.getValue());
-        return mapped;
-    }
-
-    private static NaturalLanguagePlaceNameStructure map(uk.org.siri.www.siri.NaturalLanguagePlaceNameStructure naturalLanguagePlaceNameStructure) {
-        final NaturalLanguagePlaceNameStructure mapped = new NaturalLanguagePlaceNameStructure();
-        mapped.setValue(naturalLanguagePlaceNameStructure.getValue());
-        return mapped;
-    }
-
-    private static JourneyPlaceRefStructure map(uk.org.siri.www.siri.JourneyPlaceRefStructure originRef) {
-        final JourneyPlaceRefStructure mapped = new JourneyPlaceRefStructure();
-        mapped.setValue(originRef.getValue());
-        return mapped;
-    }
-
-    private static ServiceFeatureRef map(ServiceFeatureRefStructure serviceFeatureRefStructure) {
-        final ServiceFeatureRef mapped = new ServiceFeatureRef();
-        mapped.setValue(serviceFeatureRefStructure.getValue());
-        return mapped;
-    }
-
-    private static DatedVehicleJourneyRef map(DatedVehicleJourneyRefStructure datedVehicleJourneyRef) {
-        final DatedVehicleJourneyRef mapped = new DatedVehicleJourneyRef();
-        mapped.setValue(datedVehicleJourneyRef.getValue());
         return mapped;
     }
 
@@ -449,58 +342,6 @@ public class EstimatedTimetableSiri2PbfMapper extends CommonMapper {
             mapped.setPredictionInaccurate(call.getPredictionInaccurate());
         }
 
-        return mapped;
-    }
-
-    private static NaturalLanguageStringStructure map(uk.org.siri.www.siri.NaturalLanguageStringStructure naturalLanguageStringStructure) {
-        final NaturalLanguageStringStructure mapped = new NaturalLanguageStringStructure();
-        mapped.setValue(naturalLanguageStringStructure.getValue());
-        if (naturalLanguageStringStructure.getLang() != null && naturalLanguageStringStructure.getLang() != LangType.LANG_TYPE_UNSPECIFIED) {
-            mapped.setLang(naturalLanguageStringStructure.getLang().name());
-        }
-        return mapped;
-    }
-
-    private static StopPointRef map(StopPointRefStructure stopPointRef) {
-        StopPointRef mapped = new StopPointRef();
-        mapped.setValue(stopPointRef.getValue());
-        return mapped;
-    }
-
-    private static VehicleRef map(VehicleRefStructure vehicleRef) {
-        final VehicleRef mapped = new VehicleRef();
-        mapped.setValue(vehicleRef.getValue());
-        return mapped;
-    }
-
-    private static BlockRefStructure map(uk.org.siri.www.siri.BlockRefStructure blockRef) {
-        final BlockRefStructure mapped = new BlockRefStructure();
-        mapped.setValue(blockRef.getValue());
-        return mapped;
-    }
-
-    private static OperatorRefStructure map(uk.org.siri.www.siri.OperatorRefStructure operatorRef) {
-        final OperatorRefStructure mapped = new OperatorRefStructure();
-        mapped.setValue(operatorRef.getValue());
-        return mapped;
-    }
-
-    private static FramedVehicleJourneyRefStructure map(uk.org.siri.www.siri.FramedVehicleJourneyRefStructure framedVehicleJourneyRef) {
-        final FramedVehicleJourneyRefStructure mapped = new FramedVehicleJourneyRefStructure();
-        mapped.setDatedVehicleJourneyRef(framedVehicleJourneyRef.getDatedVehicleJourneyRef());
-        mapped.setDataFrameRef(map(framedVehicleJourneyRef.getDataFrameRef()));
-        return mapped;
-    }
-
-    private static DataFrameRefStructure map(uk.org.siri.www.siri.DataFrameRefStructure dataFrameRef) {
-        final DataFrameRefStructure mapped = new DataFrameRefStructure();
-        mapped.setValue(dataFrameRef.getValue());
-        return mapped;
-    }
-
-    private static DirectionRefStructure map(uk.org.siri.www.siri.DirectionRefStructure directionRef) {
-        final DirectionRefStructure mapped = new DirectionRefStructure();
-        mapped.setValue(directionRef.getValue());
         return mapped;
     }
 }
