@@ -20,11 +20,10 @@
 
     <groupId>org.entur</groupId>
     <artifactId>siri-protobuf-mapper</artifactId>
-    <version>0.1</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.mapstruct.version>1.4.0-SNAPSHOT</org.mapstruct.version>
     </properties>
 
     <name>siri-protobuf-mapper</name>
@@ -52,14 +51,14 @@
         <dependency>
             <groupId>org.entur</groupId>
             <artifactId>siri-java-model</artifactId>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.12</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.entur</groupId>
             <artifactId>siri-protobuf</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.1</version>
             <scope>compile</scope>
         </dependency>
 
@@ -117,29 +116,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>no.entur.mapstruct.spi</groupId>
-                            <artifactId>protobuf-spi-impl</artifactId>
-                            <version>1.0.0-SNAPSHOT</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.mapstruct</groupId>
-                        <artifactId>mapstruct</artifactId>
-                        <version>${org.mapstruct.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
