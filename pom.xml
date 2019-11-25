@@ -47,6 +47,14 @@
         <url>http://www.entur.org/</url>
     </organization>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>Entur Github package repo</name>
+            <url>https://maven.pkg.github.com/entur/siri-protobuf</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.entur</groupId>
