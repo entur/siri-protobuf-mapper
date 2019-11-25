@@ -20,7 +20,7 @@
 
     <groupId>org.entur</groupId>
     <artifactId>siri-protobuf-mapper</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -188,6 +188,11 @@
     </profiles>
 
     <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>entur</name>
+            <url>https://maven.pkg.github.com/entur/siri-protobuf-mapper</url>
+        </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>entur2-snapshots</name>
