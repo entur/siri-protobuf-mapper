@@ -26,6 +26,7 @@ public class Helper {
     static String formatXml(Siri siri, Boolean format) throws JAXBException {
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, format);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, format);
         StringWriter writer = new StringWriter();
         marshaller.marshal(siri, writer);
 

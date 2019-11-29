@@ -319,7 +319,7 @@ public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
         }
         if (call.getExtensions() != null) {
             // TODO: Add support for Extensions
-//            builder.setExtensions(map(call.getExtensions()));
+//            builder.setExtensions(mapToJaxb(call.getExtensions()));
         }
         return builder;
     }

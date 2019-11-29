@@ -2,10 +2,12 @@ package org.entur.protobuf.mapper;
 
 import org.entur.protobuf.mapper.siri.CommonMapper;
 import org.entur.protobuf.mapper.siri.EstimatedTimetablePbf2SiriMapper;
+import org.entur.protobuf.mapper.siri.SituationExchangeSiri2PbfMapper;
 import org.entur.protobuf.mapper.siri.VehicleMonitoringSiri2PbfMapper;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri20.ServiceDelivery;
 import uk.org.siri.siri20.Siri;
+import uk.org.siri.siri20.SituationExchangeDeliveryStructure;
 import uk.org.siri.siri20.VehicleMonitoringDeliveryStructure;
 import uk.org.siri.www.siri.DataReadyRequestStructure;
 import uk.org.siri.www.siri.ServiceDeliveryType;
@@ -59,6 +61,14 @@ class Jaxb2PbfMapper extends CommonMapper {
         if (estimatedTimetableDeliveries != null) {
             for (VehicleMonitoringDeliveryStructure vehicleMonitoringDeliveryStructure : vehicleMonitoringDeliveries) {
                 builder.addVehicleMonitoringDelivery(VehicleMonitoringSiri2PbfMapper.map(vehicleMonitoringDeliveryStructure));
+            }
+        }
+
+        // SIRI SX
+        final List<SituationExchangeDeliveryStructure> situationExchangeDeliveries = serviceDelivery.getSituationExchangeDeliveries();
+        if (situationExchangeDeliveries != null) {
+            for (SituationExchangeDeliveryStructure situationExchangeDeliveryStructure : situationExchangeDeliveries) {
+                builder.addSituationExchangeDelivery(SituationExchangeSiri2PbfMapper.map(situationExchangeDeliveryStructure));
             }
         }
 

@@ -8,7 +8,6 @@ import uk.org.siri.siri20.DataReadyRequestStructure;
 import uk.org.siri.siri20.Siri;
 import uk.org.siri.www.siri.SiriType;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
@@ -19,17 +18,7 @@ import static org.rutebanken.siri20.util.SiriXml.parseXml;
 
 public class MapperTest {
 
-    private static String et_xml;
-    private static String vm_xml;
-
-
     SiriMapper mapper = new SiriMapper();
-
-    @BeforeClass
-    public static void init() throws IOException {
-        et_xml = readFile("src/test/resources/et.xml");
-        vm_xml = readFile("src/test/resources/vm.xml");
-    }
 
     @Test
     public void testMapDataReadyNotificationRequest() throws Exception {
@@ -39,9 +28,9 @@ public class MapperTest {
         dataReadyNotification.setRequestTimestamp(ZonedDateTime.now());
         siri.setDataReadyNotification(dataReadyNotification);
 
-        final SiriType siriType = SiriMapper.map(siri);
+        final SiriType siriType = SiriMapper.mapToPbf(siri);
 
-        final Siri mapped = SiriMapper.map(siriType);
+        final Siri mapped = SiriMapper.mapToJaxb(siriType);
 
         assertEquals(SiriXml.toXml(siri), SiriXml.toXml(mapped));
 
@@ -49,11 +38,12 @@ public class MapperTest {
 
     @Test
     public void testMapETServiceDelivery() throws Exception {
+        String et_xml = readFile("src/test/resources/et.xml");
 
         Siri parsedSiri = parseXml(et_xml);
 
         long t1 = System.currentTimeMillis();
-        SiriType pbfSiri = mapper.map(parsedSiri);
+        SiriType pbfSiri = mapper.mapToPbf(parsedSiri);
         long t2 = System.currentTimeMillis();
 
         JsonFormat.Printer jsonPrinter = JsonFormat.printer();
@@ -61,7 +51,7 @@ public class MapperTest {
         String json = jsonPrinter.print(pbfSiri);
 
         long t3 = System.currentTimeMillis();
-        Siri mappedSiri = mapper.map(pbfSiri);
+        Siri mappedSiri = mapper.mapToJaxb(pbfSiri);
         long t4 = System.currentTimeMillis();
 
         final String mappedXmlContents = formatXml(mappedSiri, Boolean.TRUE);
@@ -74,10 +64,12 @@ public class MapperTest {
     @Test
     public void testMapVMServiceDelivery() throws Exception {
 
+        String vm_xml = readFile("src/test/resources/vm.xml");
+
         Siri parsedSiri = parseXml(vm_xml);
 
         long t1 = System.currentTimeMillis();
-        SiriType pbfSiri = mapper.map(parsedSiri);
+        SiriType pbfSiri = mapper.mapToPbf(parsedSiri);
         long t2 = System.currentTimeMillis();
 
         JsonFormat.Printer jsonPrinter = JsonFormat.printer();
@@ -85,13 +77,40 @@ public class MapperTest {
         String json = jsonPrinter.print(pbfSiri);
 
         long t3 = System.currentTimeMillis();
-        Siri mappedSiri = mapper.map(pbfSiri);
+        Siri mappedSiri = mapper.mapToJaxb(pbfSiri);
         long t4 = System.currentTimeMillis();
 
         final String mappedXmlContents = formatXml(mappedSiri, Boolean.TRUE);
         final String originalXmlContents = formatXml(parsedSiri, Boolean.TRUE);
 
         assertEquals(originalXmlContents, vm_xml);
+        assertEquals(originalXmlContents, mappedXmlContents);
+    }
+
+
+    @Test
+    public void testMapSXServiceDelivery() throws Exception {
+
+        String sx_xml = readFile("src/test/resources/sx.xml");
+
+        Siri parsedSiri = parseXml(sx_xml);
+
+        long t1 = System.currentTimeMillis();
+        SiriType pbfSiri = mapper.mapToPbf(parsedSiri);
+        long t2 = System.currentTimeMillis();
+
+        JsonFormat.Printer jsonPrinter = JsonFormat.printer();
+
+        String json = jsonPrinter.print(pbfSiri);
+
+        long t3 = System.currentTimeMillis();
+        Siri mappedSiri = mapper.mapToJaxb(pbfSiri);
+        long t4 = System.currentTimeMillis();
+
+        final String mappedXmlContents = formatXml(mappedSiri, Boolean.TRUE);
+        final String originalXmlContents = formatXml(parsedSiri, Boolean.TRUE);
+
+        assertEquals(sx_xml, originalXmlContents);
         assertEquals(originalXmlContents, mappedXmlContents);
     }
 
