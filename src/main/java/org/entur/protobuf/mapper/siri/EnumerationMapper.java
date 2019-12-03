@@ -364,7 +364,7 @@ public class EnumerationMapper {
             case SELF_DRIVE:
                 return VehicleModesOfTransportEnumeration.VEHICLE_MODES_OF_TRANSPORT_ENUMERATION_SELF_DRIVE;
         }
-        return null;
+        return VehicleModesOfTransportEnumeration.VEHICLE_MODES_OF_TRANSPORT_ENUMERATION_UNSPECIFIED;
     }
 
 
@@ -556,7 +556,7 @@ public class EnumerationMapper {
             case OFF_ROUTE:
                 return VehicleStatusEnumeration.VEHICLE_STATUS_ENUMERATION_OFF_ROUTE;
             default:
-                return null;
+                return VehicleStatusEnumeration.VEHICLE_STATUS_ENUMERATION_UNSPECIFIED;
         }
     }
     protected static uk.org.siri.siri20.VehicleStatusEnumeration map(VehicleStatusEnumeration vehicleStatus) {
@@ -597,7 +597,7 @@ public class EnumerationMapper {
             case UNDERGROUND:
                 return uk.org.siri.www.siri.VehicleModesEnumeration.VEHICLE_MODES_ENUMERATION_UNDERGROUND;
             default:
-                return uk.org.siri.www.siri.VehicleModesEnumeration.UNRECOGNIZED;
+                return uk.org.siri.www.siri.VehicleModesEnumeration.VEHICLE_MODES_ENUMERATION_UNSPECIFIED;
         }
     }
 
@@ -620,7 +620,7 @@ public class EnumerationMapper {
             case NO_REPORT:
                 return CallStatusEnumeration.CALL_STATUS_ENUMERATION_NO_REPORT;
             default:
-                return null;
+                return CallStatusEnumeration.CALL_STATUS_ENUMERATION_UNSPECIFIED;
         }
     }
 
@@ -651,7 +651,16 @@ public class EnumerationMapper {
     }
 
     protected static OccupancyEnumeration map(uk.org.siri.siri20.OccupancyEnumeration occupancy) {
-        return OccupancyEnumeration.valueOf(occupancy.value());
+        switch (occupancy) {
+            case SEATS_AVAILABLE:
+                return OccupancyEnumeration.OCCUPANCY_ENUMERATION_SEATS_AVAILABLE;
+            case STANDING_AVAILABLE:
+                return OccupancyEnumeration.OCCUPANCY_ENUMERATION_STANDING_AVAILABLE;
+            case FULL:
+                return OccupancyEnumeration.OCCUPANCY_ENUMERATION_FULL;
+            default:
+                return OccupancyEnumeration.OCCUPANCY_ENUMERATION_UNSPECIFIED;
+        }
     }
 
     protected static VehicleModesEnumeration map(uk.org.siri.www.siri.VehicleModesEnumeration vehicleMode) {
