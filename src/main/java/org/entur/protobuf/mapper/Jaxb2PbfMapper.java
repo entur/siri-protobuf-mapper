@@ -58,7 +58,7 @@ class Jaxb2PbfMapper extends CommonMapper {
 
         // SIRI VM
         final List<VehicleMonitoringDeliveryStructure> vehicleMonitoringDeliveries = serviceDelivery.getVehicleMonitoringDeliveries();
-        if (estimatedTimetableDeliveries != null) {
+        if (vehicleMonitoringDeliveries != null) {
             for (VehicleMonitoringDeliveryStructure vehicleMonitoringDeliveryStructure : vehicleMonitoringDeliveries) {
                 builder.addVehicleMonitoringDelivery(VehicleMonitoringSiri2PbfMapper.map(vehicleMonitoringDeliveryStructure));
             }
