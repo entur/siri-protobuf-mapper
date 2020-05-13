@@ -159,14 +159,6 @@ public class VehicleMonitoringPbf2SiriMapper extends CommonMapper{
         return mapped;
     }
 
-    private static LocationStructure map(uk.org.siri.www.siri.LocationStructure vehicleLocation) {
-        LocationStructure mapped = new LocationStructure();
-        mapped.setLatitude(BigDecimal.valueOf(vehicleLocation.getLatitude()));
-        mapped.setLongitude(BigDecimal.valueOf(vehicleLocation.getLongitude()));
-        mapped.setSrsName(vehicleLocation.getSrsName());
-        return mapped;
-    }
-
     private static ProgressBetweenStopsStructure map(uk.org.siri.www.siri.ProgressBetweenStopsStructure progressBetweenStops) {
         ProgressBetweenStopsStructure mapped = new ProgressBetweenStopsStructure();
         mapped.setPercentage(BigDecimal.valueOf(progressBetweenStops.getPercentage()));

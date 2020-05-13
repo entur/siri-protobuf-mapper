@@ -232,19 +232,4 @@ public class VehicleMonitoringSiri2PbfMapper extends CommonMapper{
         }
         return builder;
     }
-
-
-    private static LocationStructure.Builder map(uk.org.siri.siri20.LocationStructure vehicleLocation) {
-        LocationStructure.Builder builder = LocationStructure.newBuilder();
-        if (vehicleLocation.getSrsName() != null) {
-            builder.setSrsName(vehicleLocation.getSrsName());
-        }
-        if (vehicleLocation.getLatitude() != null) {
-            builder.setLatitude(vehicleLocation.getLatitude().doubleValue());
-        }
-        if (vehicleLocation.getLongitude() != null) {
-            builder.setLongitude(vehicleLocation.getLongitude().doubleValue());
-        }
-        return builder;
-    }
 }

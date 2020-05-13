@@ -1,5 +1,6 @@
 package org.entur.protobuf.mapper.siri;
 
+import com.google.protobuf.Any;
 import uk.org.acbs.siri20.AccessibilityAssessmentStructure;
 import uk.org.acbs.siri20.AccessibilityEnumeration;
 import uk.org.acbs.siri20.AccessibilityStructure;
@@ -7,10 +8,22 @@ import uk.org.ifopt.siri20.StopPlaceComponentRefStructure;
 import uk.org.ifopt.siri20.StopPlaceRef;
 import uk.org.ifopt.www.acsb.AccessibilityLimitationStructure;
 import uk.org.ifopt.www.ifopt.StopPlaceRefStructure;
+import uk.org.siri.siri20.AdviceRefStructure;
 import uk.org.siri.siri20.AffectedStopPointStructure;
 import uk.org.siri.siri20.AffectsScopeStructure;
+import uk.org.siri.siri20.BlockingStructure;
+import uk.org.siri.siri20.BoardingStructure;
+import uk.org.siri.siri20.CasualtiesStructure;
+import uk.org.siri.siri20.DelaysStructure;
+import uk.org.siri.siri20.EasementsStructure;
+import uk.org.siri.siri20.Extensions;
 import uk.org.siri.siri20.NetworkRefStructure;
+import uk.org.siri.siri20.PtAdviceStructure;
+import uk.org.siri.siri20.PtConsequenceStructure;
+import uk.org.siri.siri20.PtConsequencesStructure;
 import uk.org.siri.siri20.PtSituationElement;
+import uk.org.siri.siri20.ReferencesStructure;
+import uk.org.siri.siri20.RelatedSituationStructure;
 import uk.org.siri.siri20.SituationExchangeDeliveryStructure;
 import uk.org.siri.siri20.SituationNumber;
 import uk.org.siri.siri20.SituationSourceStructure;
@@ -20,15 +33,18 @@ import uk.org.siri.www.siri.AffectedRouteStructure;
 import uk.org.siri.www.siri.AffectedStopPlaceComponentStructure;
 import uk.org.siri.www.siri.AffectedStopPlaceStructure;
 import uk.org.siri.www.siri.AffectedVehicleJourneyStructure;
+import uk.org.siri.www.siri.DatedVehicleJourneyRefStructure;
 import uk.org.siri.www.siri.DefaultedTextStructure;
 import uk.org.siri.www.siri.EmptyType;
 import uk.org.siri.www.siri.EntryQualifierStructure;
+import uk.org.siri.www.siri.ExtensionsStructure;
 import uk.org.siri.www.siri.HalfOpenTimestampOutputRangeStructure;
 import uk.org.siri.www.siri.InfoLinkStructure;
 import uk.org.siri.www.siri.NaturalLanguageStringStructure;
 import uk.org.siri.www.siri.PtSituationElementStructure;
 import uk.org.siri.www.siri.ReportTypeEnumeration;
 import uk.org.siri.www.siri.RoutePointTypeEnumeration;
+import uk.org.siri.www.siri.SituationVersion;
 import uk.org.siri.www.siri.VehicleJourneyRefStructure;
 
 import java.io.Serializable;
@@ -73,6 +89,9 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
         if (sx.getProgress() != null) {
             mapped.setProgress(map(sx.getProgress()));
         }
+        if (sx.hasVersion()) {
+            mapped.setVersion(map(sx.getVersion()));
+        }
         if (sx.hasVersionedAtTime()) {
             mapped.setVersionedAtTime(map(sx.getVersionedAtTime()));
         }
@@ -81,9 +100,17 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
                 mapped.getValidityPeriods().add(map(halfOpenTimestampOutputRangeStructure));
             }
         }
-        mapped.setUndefinedReason(sx.getUndefinedReason());
+        if (sx.getScopeType() != null) {
+            mapped.setScopeType(map(sx.getScopeType()));
+        }
+        if (sx.getUndefinedReason() != null && !sx.getUndefinedReason().isEmpty()) {
+            mapped.setUndefinedReason(sx.getUndefinedReason());
+        }
         if (sx.getSeverity() != null) {
             mapped.setSeverity(map(sx.getSeverity()));
+        }
+        if (sx.getAudience() != null) {
+            mapped.setAudience(map(sx.getAudience()));
         }
         if (sx.getPriority() > 0) {
             mapped.setPriority(BigInteger.valueOf(sx.getPriority()));
@@ -117,6 +144,16 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
         }
         if (sx.hasAffects()) {
             mapped.setAffects(map(sx.getAffects()));
+        }
+        if (sx.hasConsequences() && sx.getConsequences().getConsequenceCount() > 0) {
+            mapped.setConsequences(map(sx.getConsequences()));
+        }
+        if (sx.hasReferences()) {
+            mapped.setReferences(map(sx.getReferences()));
+        }
+        if (sx.hasExtensions()) {
+            //TODO: Extensions are currently ignored
+            //mapped.setExtensions(map(sx.getExtensions()));
         }
         return mapped;
     }
@@ -157,6 +194,11 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
         }
         if (affectedVehicleJourneyStructure.hasFramedVehicleJourneyRef()) {
             mapped.setFramedVehicleJourneyRef(map(affectedVehicleJourneyStructure.getFramedVehicleJourneyRef()));
+        }
+        if (affectedVehicleJourneyStructure.getDatedVehicleJourneyRefCount() > 0) {
+            for (DatedVehicleJourneyRefStructure datedVehicleJourneyRefStructure : affectedVehicleJourneyStructure.getDatedVehicleJourneyRefList()) {
+                mapped.getDatedVehicleJourneyReves().add(map(datedVehicleJourneyRefStructure));
+            }
         }
         if (affectedVehicleJourneyStructure.hasOperator()) {
             mapped.setOperator(map(affectedVehicleJourneyStructure.getOperator()));
@@ -199,6 +241,12 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
             for (RoutePointTypeEnumeration routePointTypeEnumeration : affectedStopPointStructure.getStopConditionList()) {
                 mapped.getStopConditions().add(map(routePointTypeEnumeration));
             }
+        }
+        if (affectedStopPointStructure.getStopPointType() != null) {
+            mapped.setStopPointType(map(affectedStopPointStructure.getStopPointType()));
+        }
+        if (affectedStopPointStructure.hasLocation()) {
+            mapped.setLocation(map(affectedStopPointStructure.getLocation()));
         }
         return mapped;
     }
@@ -266,6 +314,12 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
     private static StopPlaceRef map(StopPlaceRefStructure stopPlaceRef) {
         StopPlaceRef mapped = new StopPlaceRef();
         mapped.setValue(stopPlaceRef.getValue());
+        return mapped;
+    }
+
+    private static uk.org.siri.siri20.SituationVersion map(SituationVersion version) {
+        uk.org.siri.siri20.SituationVersion mapped = new uk.org.siri.siri20.SituationVersion();
+        mapped.setValue(BigInteger.valueOf(version.getValue()));
         return mapped;
     }
 
@@ -375,6 +429,9 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
         if (affectedLineStructure.hasRoutes()) {
             mapped.setRoutes(map(affectedLineStructure.getRoutes()));
         }
+        if (affectedLineStructure.hasPublishedLineName()) {
+            mapped.setPublishedLineName(map(affectedLineStructure.getPublishedLineName()));
+        }
         return mapped;
     }
 
@@ -407,6 +464,8 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
                 mapped.getAffectedStopPointsAndLinkProjectionToNextStopPoints().add(stopPoint);
             }
         }
+
+        mapped.setAffectedOnly(stopPoints.getAffectedOnly());
         return mapped;
     }
 
@@ -425,6 +484,12 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
             for (RoutePointTypeEnumeration routePointTypeEnumeration : affectedStopPoint.getStopConditionList()) {
                 mapped.getStopConditions().add(map(routePointTypeEnumeration));
             }
+        }
+        if (affectedStopPoint.getStopPointType() != null) {
+            mapped.setStopPointType(map(affectedStopPoint.getStopPointType()));
+        }
+        if (affectedStopPoint.hasLocation()) {
+            mapped.setLocation(map(affectedStopPoint.getLocation()));
         }
         return mapped;
     }
@@ -469,7 +534,7 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
             case REPORT_TYPE_ENUMERATION_GENERAL:
                 return "general";
             case REPORT_TYPE_ENUMERATION_INCIDENT:
-                return "indident";
+                return "incident";
         }
         return null;
     }
@@ -490,12 +555,194 @@ public class SituationExchangePbf2SiriMapper extends CommonMapper {
         if (source.getSourceType() != null) {
             mapped.setSourceType(map(source.getSourceType()));
         }
+        if (source.getPhone() != null && !source.getPhone().isEmpty()) {
+            mapped.setPhone(source.getPhone());
+        }
+        if (source.getAgentReference() != null && !source.getAgentReference().isEmpty()) {
+            mapped.setAgentReference(source.getAgentReference());
+        }
+        if (source.hasTimeOfCommunication()){
+            mapped.setTimeOfCommunication(map(source.getTimeOfCommunication()));
+        }
         return mapped;
     }
 
     private static SituationNumber map(EntryQualifierStructure situationNumber) {
         SituationNumber mapped = new SituationNumber();
         mapped.setValue(situationNumber.getValue());
+        return mapped;
+    }
+
+    private static PtConsequencesStructure map(uk.org.siri.www.siri.PtConsequencesStructure consequences) {
+        PtConsequencesStructure mapped = new PtConsequencesStructure();
+        if (consequences.getConsequenceCount() > 0) {
+            for (uk.org.siri.www.siri.PtConsequenceStructure consequence : consequences.getConsequenceList()) {
+                mapped.getConsequences().add(map(consequence));
+            }
+        }
+        return mapped;
+    }
+
+    private static PtConsequenceStructure map(uk.org.siri.www.siri.PtConsequenceStructure consequence) {
+        PtConsequenceStructure mapped = new PtConsequenceStructure();
+        if (consequence.hasAdvice()) {
+            mapped.setAdvice(map(consequence.getAdvice()));
+        }
+        if (consequence.hasAffects()) {
+            mapped.setAffects(map(consequence.getAffects()));
+        }
+        if (consequence.hasBlocking()) {
+            mapped.setBlocking(map(consequence.getBlocking()));
+        }
+        if (consequence.hasBoarding()) {
+            mapped.setBoarding(map(consequence.getBoarding()));
+        }
+        if (consequence.hasCasualties()) {
+            mapped.setCasualties(map(consequence.getCasualties()));
+        }
+        if (consequence.getConditionCount() > 0) {
+            for (uk.org.siri.www.siri.ServiceConditionEnumeration condition : consequence.getConditionList()) {
+                mapped.getConditions().add(map(condition));
+            }
+        }
+        if (consequence.hasDelays()) {
+            mapped.setDelays(map(consequence.getDelays()));
+        }
+        if (consequence.getEasementsCount() > 0) {
+            for (uk.org.siri.www.siri.EasementsStructure easement : consequence.getEasementsList()) {
+                mapped.getEasements().add(map(easement));
+            }
+        }
+        if (consequence.hasPeriod()) {
+            mapped.setPeriod(map(consequence.getPeriod()));
+        }
+        if (consequence.getSeverity() != null) {
+            mapped.setSeverity(map(consequence.getSeverity()));
+        }
+        return mapped;
+    }
+
+    private static PtAdviceStructure map(uk.org.siri.www.siri.PtAdviceStructure advice) {
+        PtAdviceStructure mapped = new PtAdviceStructure();
+        if (advice.getAdviceRef() != null) {
+            mapped.setAdviceRef(map(advice.getAdviceRef()));
+        }
+        if (advice.getDetailsCount() > 0) {
+            for (uk.org.siri.www.siri.NaturalLanguageStringStructure detail : advice.getDetailsList()) {
+                mapped.getDetails().add(map(detail));
+            }
+        }
+        return mapped;
+    }
+
+    private static AdviceRefStructure map(uk.org.siri.www.siri.AdviceRefStructure adviceRef) {
+        AdviceRefStructure mapped = new AdviceRefStructure();
+        mapped.setValue(adviceRef.getValue());
+        return mapped;
+    }
+
+    private static BlockingStructure map(uk.org.siri.www.siri.BlockingStructure blocking) {
+        BlockingStructure mapped = new BlockingStructure();
+        mapped.setJourneyPlanner(blocking.getJourneyPlanner());
+        mapped.setRealTime(blocking.getRealTime());
+        return mapped;
+    }
+
+    private static BoardingStructure map(uk.org.siri.www.siri.BoardingStructure boarding) {
+        BoardingStructure mapped = new BoardingStructure();
+        if (boarding.getArrivalBoardingActivity() != null) {
+            mapped.setArrivalBoardingActivity(map(boarding.getArrivalBoardingActivity()));
+        }
+        if (boarding.getDepartureBoardingActivity() != null) {
+            mapped.setDepartureBoardingActivity(map(boarding.getDepartureBoardingActivity()));
+        }
+        return mapped;
+    }
+
+    private static CasualtiesStructure map(uk.org.siri.www.siri.CasualtiesStructure boarding) {
+        CasualtiesStructure mapped = new CasualtiesStructure();
+        mapped.setNumberOfDeaths(BigInteger.valueOf(boarding.getNumberOfDeaths()));
+        mapped.setNumberOfInjured(BigInteger.valueOf(boarding.getNumberOfInjured()));
+        return mapped;
+    }
+
+    private static DelaysStructure map(uk.org.siri.www.siri.DelaysStructure delays) {
+        DelaysStructure mapped = new DelaysStructure();
+        if (delays.hasDelay()) {
+            mapped.setDelay(map(delays.getDelay()));
+        }
+        if (delays.getDelayBand() != null) {
+            mapped.setDelayBand(map(delays.getDelayBand()));
+        }
+        if (delays.getDelayType() != null) {
+            mapped.setDelayType(map(delays.getDelayType()));
+        }
+        return mapped;
+    }
+
+    private static EasementsStructure map(uk.org.siri.www.siri.EasementsStructure easement) {
+        EasementsStructure mapped = new EasementsStructure();
+        mapped.setEasementRef(easement.getEasementRef());
+        if (easement.getEasementCount() > 0) {
+            for (uk.org.siri.www.siri.NaturalLanguageStringStructure easementLanguageStructure : easement.getEasementList()) {
+                mapped.getEasements().add(map(easementLanguageStructure));
+            }
+        }
+        if (easement.getTicketRestrictions() != null) {
+            mapped.setTicketRestrictions(map(easement.getTicketRestrictions()));
+        }
+        return mapped;
+    }
+
+    private static ReferencesStructure map(uk.org.siri.www.siri.ReferencesStructure references) {
+        ReferencesStructure mapped = new ReferencesStructure();
+        if (references.getRelatedToRefCount() > 0) {
+            for (uk.org.siri.www.siri.RelatedSituationStructure reference : references.getRelatedToRefList()) {
+                mapped.getRelatedToReves().add(map(reference));
+            }
+        }
+        return mapped;
+    }
+
+    private static RelatedSituationStructure map(uk.org.siri.www.siri.RelatedSituationStructure reference) {
+        RelatedSituationStructure mapped = new RelatedSituationStructure();
+        if (reference.hasCountryRef()) {
+            mapped.setCountryRef(map(reference.getCountryRef()));
+        }
+        if (reference.hasCreationTime()) {
+            mapped.setCreationTime(map(reference.getCreationTime()));
+        }
+        if (reference.getExternalReference() != null && !reference.getExternalReference().isEmpty()) {
+            mapped.setExternalReference(reference.getExternalReference());
+        }
+        if (reference.hasParticipantRef()) {
+            mapped.setParticipantRef(map(reference.getParticipantRef()));
+        }
+        if (reference.getRelatedAs() != null) {
+            mapped.setRelatedAs(map(reference.getRelatedAs()));
+        }
+        if (reference.hasSituationNumber()) {
+            mapped.setSituationNumber(map(reference.getSituationNumber()));
+        }
+        if (reference.hasUpdateCountryRef()) {
+            mapped.setUpdateCountryRef(map(reference.getUpdateCountryRef()));
+        }
+        if (reference.hasUpdateParticipantRef()) {
+            mapped.setUpdateParticipantRef(map(reference.getUpdateParticipantRef()));
+        }
+        if (reference.hasVersion()) {
+            mapped.setVersion(map(reference.getVersion()));
+        }
+        return mapped;
+    }
+
+    private static Extensions map(ExtensionsStructure extensions) {
+        Extensions mapped = new Extensions();
+        if (extensions.getAnyCount() > 0) {
+            for (Any any : extensions.getAnyList()) {
+                mapped.getAnies().add(map(any));
+            }
+        }
         return mapped;
     }
 }

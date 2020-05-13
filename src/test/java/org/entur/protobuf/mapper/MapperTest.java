@@ -2,12 +2,15 @@ package org.entur.protobuf.mapper;
 
 import com.google.protobuf.util.JsonFormat;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rutebanken.siri20.util.SiriXml;
 import uk.org.siri.siri20.DataReadyRequestStructure;
 import uk.org.siri.siri20.Siri;
 import uk.org.siri.www.siri.SiriType;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
@@ -113,6 +116,4 @@ public class MapperTest {
         assertEquals(sx_xml, originalXmlContents);
         assertEquals(originalXmlContents, mappedXmlContents);
     }
-
-
 }

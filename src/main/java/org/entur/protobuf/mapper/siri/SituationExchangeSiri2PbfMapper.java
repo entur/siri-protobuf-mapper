@@ -1,25 +1,13 @@
 package org.entur.protobuf.mapper.siri;
 
+import org.w3c.dom.Element;
 import uk.org.acbs.siri20.AccessibilityLimitationStructure;
 import uk.org.ifopt.www.acsb.AccessibilityAssessmentStructure;
 import uk.org.ifopt.www.acsb.AccessibilityStructure;
 import uk.org.ifopt.www.ifopt.StopPlaceComponentRefStructure;
-import uk.org.siri.siri20.AffectedLineStructure;
-import uk.org.siri.siri20.AffectedOperatorStructure;
-import uk.org.siri.siri20.AffectedRouteStructure;
-import uk.org.siri.siri20.AffectedStopPlaceComponentStructure;
-import uk.org.siri.siri20.AffectedStopPlaceStructure;
-import uk.org.siri.siri20.AffectedStopPointStructure;
-import uk.org.siri.siri20.AffectedVehicleJourneyStructure;
-import uk.org.siri.siri20.DefaultedTextStructure;
-import uk.org.siri.siri20.HalfOpenTimestampOutputRangeStructure;
-import uk.org.siri.siri20.InfoLinkStructure;
-import uk.org.siri.siri20.NaturalLanguageStringStructure;
-import uk.org.siri.siri20.PtSituationElement;
-import uk.org.siri.siri20.RoutePointTypeEnumeration;
-import uk.org.siri.siri20.SituationNumber;
-import uk.org.siri.siri20.VehicleJourneyRef;
+import uk.org.siri.siri20.*;
 import uk.org.siri.www.siri.AffectsScopeStructure;
+import uk.org.siri.www.siri.DatedVehicleJourneyRefStructure;
 import uk.org.siri.www.siri.EntryQualifierStructure;
 import uk.org.siri.www.siri.NetworkRefStructure;
 import uk.org.siri.www.siri.PtSituationElementStructure;
@@ -29,6 +17,7 @@ import uk.org.siri.www.siri.SituationExchangeDeliveryStructure;
 import uk.org.siri.www.siri.SituationSourceStructure;
 import uk.org.siri.www.siri.SituationVersion;
 import uk.org.siri.www.siri.VehicleJourneyRefStructure;
+import uk.org.siri.www.siri.ExtensionsStructure;
 
 import java.io.Serializable;
 import java.util.List;
@@ -83,11 +72,17 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
                 builder.addValidityPeriod(map(validityPeriod));
             }
         }
+        if (ptSituationElement.getScopeType() != null) {
+            builder.setScopeType(map(ptSituationElement.getScopeType()));
+        }
         if (ptSituationElement.getUndefinedReason() != null) {
             builder.setUndefinedReason(ptSituationElement.getUndefinedReason());
         }
         if (ptSituationElement.getSeverity() != null) {
             builder.setSeverity(map(ptSituationElement.getSeverity()));
+        }
+        if (ptSituationElement.getAudience() != null) {
+            builder.setAudience(map(ptSituationElement.getAudience()));
         }
         if (ptSituationElement.getPriority() != null) {
             builder.setPriority(ptSituationElement.getPriority().intValue());
@@ -96,7 +91,7 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
             builder.setReportType(map(ptSituationElement.getReportType()));
         }
 
-        builder.setPlanned(ptSituationElement.isPlanned() != null && ptSituationElement.isPlanned());
+        builder.setPlanned(ptSituationElement.isPlanned() != null && ptSituationElement.isPlanned());  //default false
 
         if (ptSituationElement.getSummaries() != null) {
             for (DefaultedTextStructure summary : ptSituationElement.getSummaries()) {
@@ -124,6 +119,19 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (ptSituationElement.getAffects() != null) {
             builder.setAffects(map(ptSituationElement.getAffects()));
         }
+        if (ptSituationElement.getConsequences() != null &&
+                ptSituationElement.getConsequences().getConsequences() != null &&
+                !ptSituationElement.getConsequences().getConsequences().isEmpty()) {
+            builder.setConsequences(map(ptSituationElement.getConsequences()));
+        }
+        if (ptSituationElement.getReferences() != null) {
+            builder.setReferences(map(ptSituationElement.getReferences()));
+        }
+        if (ptSituationElement.getExtensions() != null) {
+            //TODO: Extensions are currently ignored
+            //builder.setExtensions(map(ptSituationElement.getExtensions()));
+        }
+
         return builder;
     }
 
@@ -164,6 +172,11 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (affectedVehicleJourney.getFramedVehicleJourneyRef() != null) {
             builder.setFramedVehicleJourneyRef(map(affectedVehicleJourney.getFramedVehicleJourneyRef()));
         }
+        if (affectedVehicleJourney.getDatedVehicleJourneyReves() != null) {
+            for (DatedVehicleJourneyRef datedVehicleJourneyRef : affectedVehicleJourney.getDatedVehicleJourneyReves()) {
+                builder.addDatedVehicleJourneyRef(map(datedVehicleJourneyRef));
+            }
+        }
         if (affectedVehicleJourney.getOperator() != null) {
             builder.setOperator(map(affectedVehicleJourney.getOperator()));
         }
@@ -180,6 +193,14 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         }
 
         return builder;
+    }
+
+    private static DatedVehicleJourneyRefStructure map(DatedVehicleJourneyRef datedVehicleJourneyRef) {
+        DatedVehicleJourneyRefStructure.Builder builder = DatedVehicleJourneyRefStructure.newBuilder();
+        if (datedVehicleJourneyRef.getValue() != null && !datedVehicleJourneyRef.getValue().isEmpty()) {
+            builder.setValue(datedVehicleJourneyRef.getValue());
+        }
+        return builder.build();
     }
 
     private static VehicleJourneyRefStructure.Builder map(VehicleJourneyRef vehicleJourneyRef) {
@@ -355,6 +376,9 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (affectedLine.getRoutes() != null) {
             builder.setRoutes(map(affectedLine.getRoutes()));
         }
+        if (affectedLine.getPublishedLineName() != null) {
+            builder.setPublishedLineName(map(affectedLine.getPublishedLineName()));
+        }
         return builder;
     }
 
@@ -390,6 +414,7 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
                 }
             }
         }
+        builder.setAffectedOnly(stopPoints.isAffectedOnly() != null && stopPoints.isAffectedOnly());  //default false
         return builder;
     }
 
@@ -411,6 +436,12 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
             for (RoutePointTypeEnumeration stopCondition : affectedStopPoint.getStopConditions()) {
                 stopPoint.addStopCondition(map(stopCondition));
             }
+        }
+        if (affectedStopPoint.getStopPointType() != null) {
+            stopPoint.setStopPointType(map(affectedStopPoint.getStopPointType()));
+        }
+        if (affectedStopPoint.getLocation() != null) {
+            stopPoint.setLocation(map(affectedStopPoint.getLocation()));
         }
 
         builder.setAffectedStopPoint(stopPoint);
@@ -493,6 +524,15 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (source.getSourceType() != null) {
             builder.setSourceType(map(source.getSourceType()));
         }
+        if (source.getPhone() != null && !source.getPhone().isEmpty()) {
+            builder.setPhone(source.getPhone());
+        }
+        if (source.getAgentReference() != null && !source.getAgentReference().isEmpty()) {
+            builder.setAgentReference(source.getAgentReference());
+        }
+        if (source.getTimeOfCommunication() != null) {
+            builder.setTimeOfCommunication(map(source.getTimeOfCommunication()));
+        }
         return builder;
     }
 
@@ -501,5 +541,187 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         EntryQualifierStructure.Builder builder = EntryQualifierStructure.newBuilder();
         builder.setValue(situationNumber.getValue());
         return builder;
+    }
+
+    private static uk.org.siri.www.siri.PtConsequencesStructure map(PtConsequencesStructure consequences) {
+        uk.org.siri.www.siri.PtConsequencesStructure.Builder builder = uk.org.siri.www.siri.PtConsequencesStructure.newBuilder();
+        if (consequences != null && consequences.getConsequences() != null && !consequences.getConsequences().isEmpty()) {
+            for (PtConsequenceStructure consequence : consequences.getConsequences()) {
+                builder.addConsequence(map(consequence));
+            }
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.PtConsequenceStructure map(PtConsequenceStructure consequence) {
+        uk.org.siri.www.siri.PtConsequenceStructure.Builder builder = uk.org.siri.www.siri.PtConsequenceStructure.newBuilder();
+        if (consequence.getAdvice() != null) {
+            builder.setAdvice(map(consequence.getAdvice()));
+        }
+        if (consequence.getAffects() != null) {
+            builder.setAffects(map(consequence.getAffects()));
+        }
+        if (consequence.getBlocking() != null) {
+            builder.setBlocking(map(consequence.getBlocking()));
+        }
+        if (consequence.getBoarding() != null) {
+            builder.setBoarding(map(consequence.getBoarding()));
+        }
+        if (consequence.getCasualties() != null) {
+            builder.setCasualties(map(consequence.getCasualties()));
+        }
+        if (consequence.getConditions() != null && !consequence.getConditions().isEmpty()) {
+            for (ServiceConditionEnumeration condition : consequence.getConditions()) {
+                builder.addCondition(map(condition));
+            }
+        }
+        if (consequence.getDelays() != null) {
+            builder.setDelays(map(consequence.getDelays()));
+        }
+        if (consequence.getEasements() != null && !consequence.getEasements().isEmpty()) {
+            for (EasementsStructure easement : consequence.getEasements()) {
+                builder.addEasements(map(easement));
+            }
+        }
+        if (consequence.getPeriod() != null) {
+            builder.setPeriod(map(consequence.getPeriod()));
+        }
+        if (consequence.getSeverity() != null) {
+            builder.setSeverity(map(consequence.getSeverity()));
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.PtAdviceStructure map(PtAdviceStructure advice) {
+        uk.org.siri.www.siri.PtAdviceStructure.Builder builder = uk.org.siri.www.siri.PtAdviceStructure.newBuilder();
+        if (advice.getAdviceRef() != null) {
+            builder.setAdviceRef(map(advice.getAdviceRef()));
+        }
+        if (advice.getDetails() != null && !advice.getDetails().isEmpty()) {
+            for (NaturalLanguageStringStructure detail : advice.getDetails()) {
+                builder.addDetails(map(detail));
+            }
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.AdviceRefStructure map(AdviceRefStructure adviceRef) {
+        uk.org.siri.www.siri.AdviceRefStructure.Builder builder = uk.org.siri.www.siri.AdviceRefStructure.newBuilder();
+        builder.setValue(adviceRef.getValue());
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.BlockingStructure map(BlockingStructure blocking) {
+        uk.org.siri.www.siri.BlockingStructure.Builder builder = uk.org.siri.www.siri.BlockingStructure.newBuilder();
+        if (blocking.isJourneyPlanner() != null) {
+            builder.setJourneyPlanner(blocking.isJourneyPlanner());
+        }
+        if (blocking.isRealTime() != null) {
+            builder.setRealTime(blocking.isRealTime());
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.BoardingStructure map(BoardingStructure boarding) {
+        uk.org.siri.www.siri.BoardingStructure.Builder builder = uk.org.siri.www.siri.BoardingStructure.newBuilder();
+        if (boarding.getArrivalBoardingActivity() != null) {
+            builder.setArrivalBoardingActivity(map(boarding.getArrivalBoardingActivity()));
+        }
+        if (boarding.getDepartureBoardingActivity() != null) {
+            builder.setDepartureBoardingActivity(map(boarding.getDepartureBoardingActivity()));
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.CasualtiesStructure map(CasualtiesStructure boarding) {
+        uk.org.siri.www.siri.CasualtiesStructure.Builder builder = uk.org.siri.www.siri.CasualtiesStructure.newBuilder();
+        if (boarding.getNumberOfDeaths() != null) {
+            builder.setNumberOfDeaths(boarding.getNumberOfDeaths().intValue());
+        }
+        if (boarding.getNumberOfInjured() != null) {
+            builder.setNumberOfInjured(boarding.getNumberOfInjured().intValue());
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.DelaysStructure map(DelaysStructure delays) {
+        uk.org.siri.www.siri.DelaysStructure.Builder builder = uk.org.siri.www.siri.DelaysStructure.newBuilder();
+        if (delays.getDelay() != null) {
+            builder.setDelay(map(delays.getDelay()));
+        }
+        if (delays.getDelayBand() != null) {
+            builder.setDelayBand(map(delays.getDelayBand()));
+        }
+        if (delays.getDelayType() != null) {
+            builder.setDelayType(map(delays.getDelayType()));
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.EasementsStructure map(EasementsStructure easement) {
+        uk.org.siri.www.siri.EasementsStructure.Builder builder = uk.org.siri.www.siri.EasementsStructure.newBuilder();
+        builder.setEasementRef(easement.getEasementRef());
+        if (easement.getEasements() != null && !easement.getEasements().isEmpty()) {
+            for (NaturalLanguageStringStructure easementLanguageStructure : easement.getEasements()) {
+                builder.addEasement(map(easementLanguageStructure));
+            }
+        }
+        if (easement.getTicketRestrictions() != null) {
+            builder.setTicketRestrictions(map(easement.getTicketRestrictions()));
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.ReferencesStructure map(ReferencesStructure references) {
+        uk.org.siri.www.siri.ReferencesStructure.Builder builder = uk.org.siri.www.siri.ReferencesStructure.newBuilder();
+        if (references.getRelatedToReves() != null && !references.getRelatedToReves().isEmpty()) {
+            for (RelatedSituationStructure reference : references.getRelatedToReves()) {
+                builder.addRelatedToRef(map(reference));
+            }
+        }
+        return builder.build();
+    }
+
+    private static uk.org.siri.www.siri.RelatedSituationStructure map(RelatedSituationStructure reference) {
+        uk.org.siri.www.siri.RelatedSituationStructure.Builder builder = uk.org.siri.www.siri.RelatedSituationStructure.newBuilder();
+        if (reference.getCountryRef() != null) {
+            builder.setCountryRef(map(reference.getCountryRef()));
+        }
+        if (reference.getCreationTime() != null) {
+            builder.setCreationTime(map(reference.getCreationTime()));
+        }
+        if (reference.getExternalReference() != null) {
+            builder.setExternalReference(reference.getExternalReference());
+        }
+        if (reference.getParticipantRef() != null) {
+            builder.setParticipantRef(map(reference.getParticipantRef()));
+        }
+        if (reference.getRelatedAs() != null) {
+            builder.setRelatedAs(map(reference.getRelatedAs()));
+        }
+        if (reference.getSituationNumber() != null) {
+            builder.setSituationNumber(map(reference.getSituationNumber()));
+        }
+        if (reference.getUpdateCountryRef() != null) {
+            builder.setUpdateCountryRef(map(reference.getUpdateCountryRef()));
+        }
+        if (reference.getUpdateParticipantRef() != null) {
+            builder.setUpdateParticipantRef(map(reference.getUpdateParticipantRef()));
+        }
+        if (reference.getVersion() != null) {
+            builder.setVersion(map(reference.getVersion()));
+        }
+        return builder.build();
+    }
+
+    private static ExtensionsStructure map(Extensions extensions) {
+        ExtensionsStructure.Builder builder = ExtensionsStructure.newBuilder();
+
+        if (extensions.getAnies() != null && !extensions.getAnies().isEmpty()) {
+            for (Element any : extensions.getAnies()) {
+                builder.addAny(map(any));
+            }
+        }
+        return builder.build();
     }
 }

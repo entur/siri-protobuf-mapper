@@ -44,9 +44,7 @@ class Jaxb2PbfMapper extends CommonMapper {
             builder.setProducerRef(map(serviceDelivery.getProducerRef()));
         }
 
-        if (serviceDelivery.isMoreData() != null) {
-            builder.setMoreData(serviceDelivery.isMoreData());
-        }
+        builder.setMoreData(serviceDelivery.isMoreData() != null && serviceDelivery.isMoreData()); //default false
 
         // SIRI ET
         final List<EstimatedTimetableDeliveryStructure> estimatedTimetableDeliveries = serviceDelivery.getEstimatedTimetableDeliveries();

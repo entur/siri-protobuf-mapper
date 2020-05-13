@@ -1,7 +1,16 @@
 package org.entur.protobuf.mapper.siri;
 
+import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Timestamp;
 import org.w3.www.xml._1998.namespace.LangType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import uk.org.ifopt.siri20.CountryRefStructure;
+import uk.org.ifopt.siri20.IanaCountryTldEnumeration;
 import uk.org.ifopt.siri20.StopPlaceRef;
 import uk.org.ifopt.www.ifopt.StopPlaceRefStructure;
 import uk.org.siri.siri20.DataFrameRefStructure;
@@ -10,6 +19,7 @@ import uk.org.siri.siri20.DestinationRef;
 import uk.org.siri.siri20.GroupOfLinesRefStructure;
 import uk.org.siri.siri20.JourneyPatternRef;
 import uk.org.siri.siri20.LineRef;
+import uk.org.siri.siri20.LocationStructure;
 import uk.org.siri.siri20.RequestorRef;
 import uk.org.siri.siri20.RouteRefStructure;
 import uk.org.siri.siri20.ServiceFeatureRef;
@@ -40,6 +50,23 @@ import uk.org.siri.www.siri.VehicleRefStructure;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -354,8 +381,132 @@ public class CommonMapper extends EnumerationMapper{
 
     protected static DatedVehicleJourneyRef map(DatedVehicleJourneyRefStructure datedVehicleJourneyRef) {
         final DatedVehicleJourneyRef mapped = new DatedVehicleJourneyRef();
-        mapped.setValue(datedVehicleJourneyRef.getValue());
+        if (datedVehicleJourneyRef.getValue() != null && !datedVehicleJourneyRef.getValue().isEmpty()) {
+            mapped.setValue(datedVehicleJourneyRef.getValue());
+        }
         return mapped;
+    }
+
+    protected static uk.org.ifopt.www.ifopt.CountryRefStructure map(CountryRefStructure countryRefStructure) {
+        uk.org.ifopt.www.ifopt.CountryRefStructure.Builder builder = uk.org.ifopt.www.ifopt.CountryRefStructure.newBuilder();
+        if (countryRefStructure.getValue() != null) {
+            builder.setValue(countryRefStructure.getValue().value());
+        }
+        return builder.build();
+    }
+
+    protected static CountryRefStructure map(uk.org.ifopt.www.ifopt.CountryRefStructure countryRefStructure) {
+        CountryRefStructure mapped = new CountryRefStructure();
+        if (countryRefStructure.getValue() != null) {
+            mapped.setValue(IanaCountryTldEnumeration.fromValue(countryRefStructure.getValue()));
+        }
+        return mapped;
+    }
+
+    protected static uk.org.siri.www.siri.LocationStructure map(LocationStructure locationStructure) {
+        uk.org.siri.www.siri.LocationStructure.Builder builder = uk.org.siri.www.siri.LocationStructure.newBuilder();
+        if (locationStructure.getLatitude() != null) {
+            builder.setLatitude(locationStructure.getLatitude().doubleValue());
+        }
+        if (locationStructure.getLongitude() != null) {
+            builder.setLongitude(locationStructure.getLongitude().doubleValue());
+        }
+        if (locationStructure.getSrsName() != null && !locationStructure.getSrsName().isEmpty()) {
+            builder.setSrsName(locationStructure.getSrsName());
+        }
+        return builder.build();
+    }
+
+    protected static LocationStructure map(uk.org.siri.www.siri.LocationStructure locationStructure) {
+        LocationStructure mapped = new LocationStructure();
+        if (locationStructure.getLatitude() != 0 || locationStructure.getLongitude() != 0) {
+            mapped.setLatitude(BigDecimal.valueOf(locationStructure.getLatitude()));
+            mapped.setLongitude(BigDecimal.valueOf(locationStructure.getLongitude()));
+        }
+        if (locationStructure.getSrsName() != null && !locationStructure.getSrsName().isEmpty()) {
+            mapped.setSrsName(locationStructure.getSrsName());
+        }
+        return mapped;
+
+    }
+
+    protected static Any map(Element any) {
+        try {
+            /*
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+            doc.adoptNode(any);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            StreamResult result = new StreamResult(bos);
+            transformer.transform(source, result);
+            byte[] array = bos.toByteArray();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docbuilder = factory.newDocumentBuilder();
+            Document doc2 = docbuilder.parse(new ByteArrayInputStream(array));
+
+
+             */
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+            doc.adoptNode(any);
+
+            TransformerFactory transfac = TransformerFactory.newInstance();
+            Transformer trans = transfac.newTransformer();
+
+            // create string from xml tree
+            StringWriter sw = new StringWriter();
+            StreamResult result = new StreamResult(sw);
+            DOMSource source = new DOMSource(doc);
+            trans.transform(source, result);
+            String xmlString = sw.toString();
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder123 = factory.newDocumentBuilder();
+
+            builder123.parse(new InputSource(new StringReader(xmlString)));
+
+
+            Any.Builder builder = Any.newBuilder();
+            return builder.build();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    protected static Element map(Any any) {
+        try {
+            ByteString value = any.getValue();
+            byte[] bytes = value.toByteArray();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new ByteArrayInputStream(bytes));
+
+            return doc.getDocumentElement();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
