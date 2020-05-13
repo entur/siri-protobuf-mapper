@@ -2,7 +2,6 @@ package org.entur.protobuf.mapper.siri;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Timestamp;
 import org.w3.www.xml._1998.namespace.LangType;
 import org.w3c.dom.Document;
@@ -53,22 +52,19 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 public class CommonMapper extends EnumerationMapper{
@@ -114,7 +110,7 @@ public class CommonMapper extends EnumerationMapper{
     }
 
     protected static java.time.ZonedDateTime map(com.google.protobuf.Timestamp value) {
-        ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochSecond(value.getSeconds()), ZoneId.systemDefault());
+        ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochSecond(value.getSeconds()), ZoneId.of("UTC"));
         time = time.plusNanos(value.getNanos());
         return time;
     }

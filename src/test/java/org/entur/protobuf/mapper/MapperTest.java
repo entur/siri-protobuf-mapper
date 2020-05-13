@@ -12,10 +12,10 @@ import uk.org.siri.www.siri.SiriType;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import static org.entur.protobuf.mapper.Helper.formatXml;
-import static org.entur.protobuf.mapper.Helper.readFile;
+import static org.entur.protobuf.mapper.Helper.*;
 import static org.junit.Assert.assertEquals;
 import static org.rutebanken.siri20.util.SiriXml.parseXml;
 
@@ -28,7 +28,7 @@ public class MapperTest {
         Siri siri = new Siri();
         siri.setVersion("2.0");
         DataReadyRequestStructure dataReadyNotification = new DataReadyRequestStructure();
-        dataReadyNotification.setRequestTimestamp(ZonedDateTime.now());
+        dataReadyNotification.setRequestTimestamp(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC));
         siri.setDataReadyNotification(dataReadyNotification);
 
         final SiriType siriType = SiriMapper.mapToPbf(siri);
@@ -44,6 +44,8 @@ public class MapperTest {
         String et_xml = readFile("src/test/resources/et.xml");
 
         Siri parsedSiri = parseXml(et_xml);
+
+        parsedSiri = changeTimezoneOnDates(parsedSiri);
 
         long t1 = System.currentTimeMillis();
         SiriType pbfSiri = mapper.mapToPbf(parsedSiri);
@@ -71,6 +73,8 @@ public class MapperTest {
 
         Siri parsedSiri = parseXml(vm_xml);
 
+        parsedSiri = changeTimezoneOnDates(parsedSiri);
+
         long t1 = System.currentTimeMillis();
         SiriType pbfSiri = mapper.mapToPbf(parsedSiri);
         long t2 = System.currentTimeMillis();
@@ -97,6 +101,8 @@ public class MapperTest {
         String sx_xml = readFile("src/test/resources/sx.xml");
 
         Siri parsedSiri = parseXml(sx_xml);
+
+        parsedSiri = changeTimezoneOnDates(parsedSiri);
 
         long t1 = System.currentTimeMillis();
         SiriType pbfSiri = mapper.mapToPbf(parsedSiri);
