@@ -123,6 +123,8 @@ public class EnumerationMapper {
             case LOCAL_PASSENGER_FERRY:
                 return WaterSubmodesOfTransportEnumeration.WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_LOCAL_PASSENGER_FERRY;
             case NATIONAL_PASSENGER_FERRY:
+                return WaterSubmodesOfTransportEnumeration.WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_NATIONAL_PASSENGER_FERRY;
+            case NATIONAL_CAR_FERRY_SERVICE:
                 return WaterSubmodesOfTransportEnumeration.WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_NATIONAL_CAR_FERRY_SERVICE;
             case SIGHTSEEING_SERVICE:
                 return WaterSubmodesOfTransportEnumeration.WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_SIGHTSEEING_SERVICE;
@@ -147,8 +149,10 @@ public class EnumerationMapper {
                 return uk.org.siri.siri20.WaterSubmodesOfTransportEnumeration.LOCAL_CAR_FERRY_SERVICE;
             case WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_LOCAL_PASSENGER_FERRY:
                 return uk.org.siri.siri20.WaterSubmodesOfTransportEnumeration.LOCAL_PASSENGER_FERRY;
-            case WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_NATIONAL_PASSENGER_FERRY:
+            case WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_NATIONAL_CAR_FERRY_SERVICE:
                 return uk.org.siri.siri20.WaterSubmodesOfTransportEnumeration.NATIONAL_CAR_FERRY_SERVICE;
+            case WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_NATIONAL_PASSENGER_FERRY:
+                return uk.org.siri.siri20.WaterSubmodesOfTransportEnumeration.NATIONAL_PASSENGER_FERRY;
             case WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_SIGHTSEEING_SERVICE:
                 return uk.org.siri.siri20.WaterSubmodesOfTransportEnumeration.SIGHTSEEING_SERVICE;
             case WATER_SUBMODES_OF_TRANSPORT_ENUMERATION_UNKNOWN:
@@ -683,6 +687,8 @@ public class EnumerationMapper {
                 return CallStatusEnumeration.CALL_STATUS_ENUMERATION_CANCELLED;
             case NO_REPORT:
                 return CallStatusEnumeration.CALL_STATUS_ENUMERATION_NO_REPORT;
+            case NOT_EXPECTED:
+                return CallStatusEnumeration.CALL_STATUS_ENUMERATION_NOT_EXPECTED;
             default:
                 return CallStatusEnumeration.CALL_STATUS_ENUMERATION_UNSPECIFIED;
         }
@@ -899,8 +905,9 @@ public class EnumerationMapper {
             case PTI_13_255:
                 return ServiceConditionEnumeration.SERVICE_CONDITION_ENUMERATION_PTI13_255;
             case UNKNOWN:
-            default:
                 return ServiceConditionEnumeration.SERVICE_CONDITION_ENUMERATION_UNKNOWN;
+            default:
+                return ServiceConditionEnumeration.SERVICE_CONDITION_ENUMERATION_UNSPECIFIED;
         }
     }
 
@@ -989,8 +996,9 @@ public class EnumerationMapper {
             case SERVICE_CONDITION_ENUMERATION_PTI13_255:
                 return uk.org.siri.siri20.ServiceConditionEnumeration.PTI_13_255;
             case SERVICE_CONDITION_ENUMERATION_UNKNOWN:
-            default:
                 return uk.org.siri.siri20.ServiceConditionEnumeration.UNKNOWN;
+            default:
+                return null;
         }
     }
 
@@ -1135,8 +1143,10 @@ public class EnumerationMapper {
             case PTI_25_255:
                 return TicketRestrictionEnumeration.TICKET_RESTRICTION_ENUMERATION_PTI25_255;
             case UNKNOWN:
-            default:
                 return TicketRestrictionEnumeration.TICKET_RESTRICTION_ENUMERATION_UNKNOWN;
+            default:
+                return TicketRestrictionEnumeration.TICKET_RESTRICTION_ENUMERATION_UNSPECIFIED;
+
         }
     }
 
@@ -1189,8 +1199,9 @@ public class EnumerationMapper {
             case TICKET_RESTRICTION_ENUMERATION_PTI25_255:
                 return uk.org.siri.siri20.TicketRestrictionEnumeration.PTI_25_255;
             case TICKET_RESTRICTION_ENUMERATION_UNKNOWN:
-            default:
                 return uk.org.siri.siri20.TicketRestrictionEnumeration.UNKNOWN;
+            default:
+                return null;
         }
     }
 
