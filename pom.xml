@@ -19,7 +19,7 @@
 
     <groupId>org.entur</groupId>
     <artifactId>siri-protobuf-mapper</artifactId>
-    <version>0.5</version>
+    <version>0.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,7 +44,7 @@
         <connection>scm:git:git://git@github.com/entur/siri-protobuf-mapper.git</connection>
         <developerConnection>scm:git:git://git@github.com/entur/siri-protobuf-mapper.git</developerConnection>
         <url>https://github.com/entur/siri-protobuf-mapper/tree/master</url>
-        <tag>v0.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <url>https://github.com/entur/siri-protobuf-mapper/</url>
