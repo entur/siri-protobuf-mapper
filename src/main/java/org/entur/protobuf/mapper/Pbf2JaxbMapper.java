@@ -1,7 +1,7 @@
 package org.entur.protobuf.mapper;
 
 import org.entur.protobuf.mapper.siri.CommonMapper;
-import org.entur.protobuf.mapper.siri.EstimatedTimetableSiri2PbfMapper;
+import org.entur.protobuf.mapper.siri.EstimatedTimetablePbf2SiriMapper;
 import org.entur.protobuf.mapper.siri.SituationExchangePbf2SiriMapper;
 import org.entur.protobuf.mapper.siri.VehicleMonitoringPbf2SiriMapper;
 import uk.org.siri.siri20.DataReadyRequestStructure;
@@ -38,7 +38,7 @@ class Pbf2JaxbMapper extends CommonMapper {
         
         if (serviceDelivery.getEstimatedTimetableDeliveryList() != null) {
             for (uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure estimatedTimetableDeliveryStructure : serviceDelivery.getEstimatedTimetableDeliveryList()) {
-                mapped.getEstimatedTimetableDeliveries().add(EstimatedTimetableSiri2PbfMapper.map(estimatedTimetableDeliveryStructure));
+                mapped.getEstimatedTimetableDeliveries().add(EstimatedTimetablePbf2SiriMapper.map(estimatedTimetableDeliveryStructure));
             }
         }
         if (serviceDelivery.getVehicleMonitoringDeliveryList() != null) {

@@ -1,7 +1,7 @@
 package org.entur.protobuf.mapper;
 
 import org.entur.protobuf.mapper.siri.CommonMapper;
-import org.entur.protobuf.mapper.siri.EstimatedTimetablePbf2SiriMapper;
+import org.entur.protobuf.mapper.siri.EstimatedTimetableSiri2PbfMapper;
 import org.entur.protobuf.mapper.siri.SituationExchangeSiri2PbfMapper;
 import org.entur.protobuf.mapper.siri.VehicleMonitoringSiri2PbfMapper;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
@@ -36,7 +36,7 @@ class Jaxb2PbfMapper extends CommonMapper {
         return builder;
     }
 
-    private static ServiceDeliveryType map(ServiceDelivery serviceDelivery) {
+    private static ServiceDeliveryType.Builder map(ServiceDelivery serviceDelivery) {
         final ServiceDeliveryType.Builder builder = ServiceDeliveryType.newBuilder();
 
         builder.setResponseTimestamp(map(serviceDelivery.getResponseTimestamp()));
@@ -50,7 +50,7 @@ class Jaxb2PbfMapper extends CommonMapper {
         final List<EstimatedTimetableDeliveryStructure> estimatedTimetableDeliveries = serviceDelivery.getEstimatedTimetableDeliveries();
         if (estimatedTimetableDeliveries != null) {
             for (EstimatedTimetableDeliveryStructure estimatedTimetableDelivery : estimatedTimetableDeliveries) {
-                builder.addEstimatedTimetableDelivery(EstimatedTimetablePbf2SiriMapper.map(estimatedTimetableDelivery));
+                builder.addEstimatedTimetableDelivery(EstimatedTimetableSiri2PbfMapper.map(estimatedTimetableDelivery));
             }
         }
 
@@ -70,7 +70,7 @@ class Jaxb2PbfMapper extends CommonMapper {
             }
         }
 
-        return builder.build();
+        return builder;
     }
 
 

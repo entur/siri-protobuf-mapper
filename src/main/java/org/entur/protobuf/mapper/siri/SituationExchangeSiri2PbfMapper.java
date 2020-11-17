@@ -195,12 +195,12 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         return builder;
     }
 
-    private static DatedVehicleJourneyRefStructure map(DatedVehicleJourneyRef datedVehicleJourneyRef) {
+    private static DatedVehicleJourneyRefStructure.Builder map(DatedVehicleJourneyRef datedVehicleJourneyRef) {
         DatedVehicleJourneyRefStructure.Builder builder = DatedVehicleJourneyRefStructure.newBuilder();
         if (datedVehicleJourneyRef.getValue() != null && !datedVehicleJourneyRef.getValue().isEmpty()) {
             builder.setValue(datedVehicleJourneyRef.getValue());
         }
-        return builder.build();
+        return builder;
     }
 
     private static VehicleJourneyRefStructure.Builder map(VehicleJourneyRef vehicleJourneyRef) {
@@ -543,17 +543,17 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         return builder;
     }
 
-    private static uk.org.siri.www.siri.PtConsequencesStructure map(PtConsequencesStructure consequences) {
+    private static uk.org.siri.www.siri.PtConsequencesStructure.Builder map(PtConsequencesStructure consequences) {
         uk.org.siri.www.siri.PtConsequencesStructure.Builder builder = uk.org.siri.www.siri.PtConsequencesStructure.newBuilder();
         if (consequences != null && consequences.getConsequences() != null && !consequences.getConsequences().isEmpty()) {
             for (PtConsequenceStructure consequence : consequences.getConsequences()) {
                 builder.addConsequence(map(consequence));
             }
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.PtConsequenceStructure map(PtConsequenceStructure consequence) {
+    private static uk.org.siri.www.siri.PtConsequenceStructure.Builder map(PtConsequenceStructure consequence) {
         uk.org.siri.www.siri.PtConsequenceStructure.Builder builder = uk.org.siri.www.siri.PtConsequenceStructure.newBuilder();
         if (consequence.getAdvice() != null) {
             builder.setAdvice(map(consequence.getAdvice()));
@@ -589,10 +589,10 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (consequence.getSeverity() != null) {
             builder.setSeverity(map(consequence.getSeverity()));
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.PtAdviceStructure map(PtAdviceStructure advice) {
+    private static uk.org.siri.www.siri.PtAdviceStructure.Builder map(PtAdviceStructure advice) {
         uk.org.siri.www.siri.PtAdviceStructure.Builder builder = uk.org.siri.www.siri.PtAdviceStructure.newBuilder();
         if (advice.getAdviceRef() != null) {
             builder.setAdviceRef(map(advice.getAdviceRef()));
@@ -602,16 +602,16 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
                 builder.addDetails(map(detail));
             }
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.AdviceRefStructure map(AdviceRefStructure adviceRef) {
+    private static uk.org.siri.www.siri.AdviceRefStructure.Builder map(AdviceRefStructure adviceRef) {
         uk.org.siri.www.siri.AdviceRefStructure.Builder builder = uk.org.siri.www.siri.AdviceRefStructure.newBuilder();
         builder.setValue(adviceRef.getValue());
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.BlockingStructure map(BlockingStructure blocking) {
+    private static uk.org.siri.www.siri.BlockingStructure.Builder map(BlockingStructure blocking) {
         uk.org.siri.www.siri.BlockingStructure.Builder builder = uk.org.siri.www.siri.BlockingStructure.newBuilder();
         if (blocking.isJourneyPlanner() != null) {
             builder.setJourneyPlanner(blocking.isJourneyPlanner());
@@ -619,10 +619,10 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (blocking.isRealTime() != null) {
             builder.setRealTime(blocking.isRealTime());
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.BoardingStructure map(BoardingStructure boarding) {
+    private static uk.org.siri.www.siri.BoardingStructure.Builder map(BoardingStructure boarding) {
         uk.org.siri.www.siri.BoardingStructure.Builder builder = uk.org.siri.www.siri.BoardingStructure.newBuilder();
         if (boarding.getArrivalBoardingActivity() != null) {
             builder.setArrivalBoardingActivity(map(boarding.getArrivalBoardingActivity()));
@@ -630,10 +630,10 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (boarding.getDepartureBoardingActivity() != null) {
             builder.setDepartureBoardingActivity(map(boarding.getDepartureBoardingActivity()));
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.CasualtiesStructure map(CasualtiesStructure boarding) {
+    private static uk.org.siri.www.siri.CasualtiesStructure.Builder map(CasualtiesStructure boarding) {
         uk.org.siri.www.siri.CasualtiesStructure.Builder builder = uk.org.siri.www.siri.CasualtiesStructure.newBuilder();
         if (boarding.getNumberOfDeaths() != null) {
             builder.setNumberOfDeaths(boarding.getNumberOfDeaths().intValue());
@@ -641,10 +641,10 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (boarding.getNumberOfInjured() != null) {
             builder.setNumberOfInjured(boarding.getNumberOfInjured().intValue());
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.DelaysStructure map(DelaysStructure delays) {
+    private static uk.org.siri.www.siri.DelaysStructure.Builder map(DelaysStructure delays) {
         uk.org.siri.www.siri.DelaysStructure.Builder builder = uk.org.siri.www.siri.DelaysStructure.newBuilder();
         if (delays.getDelay() != null) {
             builder.setDelay(map(delays.getDelay()));
@@ -655,10 +655,10 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (delays.getDelayType() != null) {
             builder.setDelayType(map(delays.getDelayType()));
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.EasementsStructure map(EasementsStructure easement) {
+    private static uk.org.siri.www.siri.EasementsStructure.Builder map(EasementsStructure easement) {
         uk.org.siri.www.siri.EasementsStructure.Builder builder = uk.org.siri.www.siri.EasementsStructure.newBuilder();
         builder.setEasementRef(easement.getEasementRef());
         if (easement.getEasements() != null && !easement.getEasements().isEmpty()) {
@@ -669,20 +669,20 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (easement.getTicketRestrictions() != null) {
             builder.setTicketRestrictions(map(easement.getTicketRestrictions()));
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.ReferencesStructure map(ReferencesStructure references) {
+    private static uk.org.siri.www.siri.ReferencesStructure.Builder map(ReferencesStructure references) {
         uk.org.siri.www.siri.ReferencesStructure.Builder builder = uk.org.siri.www.siri.ReferencesStructure.newBuilder();
         if (references.getRelatedToReves() != null && !references.getRelatedToReves().isEmpty()) {
             for (RelatedSituationStructure reference : references.getRelatedToReves()) {
                 builder.addRelatedToRef(map(reference));
             }
         }
-        return builder.build();
+        return builder;
     }
 
-    private static uk.org.siri.www.siri.RelatedSituationStructure map(RelatedSituationStructure reference) {
+    private static uk.org.siri.www.siri.RelatedSituationStructure.Builder map(RelatedSituationStructure reference) {
         uk.org.siri.www.siri.RelatedSituationStructure.Builder builder = uk.org.siri.www.siri.RelatedSituationStructure.newBuilder();
         if (reference.getCountryRef() != null) {
             builder.setCountryRef(map(reference.getCountryRef()));
@@ -711,10 +711,10 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
         if (reference.getVersion() != null) {
             builder.setVersion(map(reference.getVersion()));
         }
-        return builder.build();
+        return builder;
     }
 
-    private static ExtensionsStructure map(Extensions extensions) {
+    private static ExtensionsStructure.Builder map(Extensions extensions) {
         ExtensionsStructure.Builder builder = ExtensionsStructure.newBuilder();
 
         if (extensions.getAnies() != null && !extensions.getAnies().isEmpty()) {
@@ -722,6 +722,6 @@ public class SituationExchangeSiri2PbfMapper extends CommonMapper {
                 builder.addAny(map(any));
             }
         }
-        return builder.build();
+        return builder;
     }
 }

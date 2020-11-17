@@ -2,6 +2,7 @@ package org.entur.protobuf.mapper.siri;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import org.w3.www.xml._1998.namespace.LangType;
 import org.w3c.dom.Document;
@@ -64,7 +65,6 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 public class CommonMapper extends EnumerationMapper{
@@ -79,7 +79,7 @@ public class CommonMapper extends EnumerationMapper{
         }
     }
 
-    protected static com.google.protobuf.Duration map(javax.xml.datatype.Duration value)  {
+    protected static Duration.Builder map(javax.xml.datatype.Duration value)  {
 
         final int seconds = value.getSeconds();
         final int minutes = value.getMinutes();
@@ -89,7 +89,7 @@ public class CommonMapper extends EnumerationMapper{
 
         final int totalSeconds = (seconds + minutes*60 + hours*60*60 + days*60*60*24) * sign;
 
-        return com.google.protobuf.Duration.newBuilder().setSeconds(totalSeconds).build();
+        return com.google.protobuf.Duration.newBuilder().setSeconds(totalSeconds);
     }
 
     protected static javax.xml.datatype.Duration map(com.google.protobuf.Duration value) {
@@ -99,14 +99,14 @@ public class CommonMapper extends EnumerationMapper{
         return datatypeFactory.newDuration((seconds < 0 ? "-":"")+"PT"+ Math.abs(seconds) +"S");
     }
 
-    protected static Timestamp map(ZonedDateTime value) {
+    protected static Timestamp.Builder map(ZonedDateTime value) {
         final Timestamp.Builder builder = Timestamp.newBuilder();
         final long epochSecond = value.toEpochSecond();
         if (epochSecond > 0) {
             builder.setSeconds(epochSecond);
             builder.setNanos(value.getNano());
         }
-        return builder.build();
+        return builder;
     }
 
     protected static java.time.ZonedDateTime map(com.google.protobuf.Timestamp value) {
@@ -122,10 +122,10 @@ public class CommonMapper extends EnumerationMapper{
         return mapped;
     }
 
-    protected static ParticipantRefStructure map(RequestorRef producerRef) {
+    protected static ParticipantRefStructure.Builder map(RequestorRef producerRef) {
         ParticipantRefStructure.Builder builder = ParticipantRefStructure.newBuilder();
         builder.setValue(producerRef.getValue());
-        return builder.build();
+        return builder;
     }
 
     protected static LineRefStructure.Builder map(LineRef lineRef) {
@@ -383,12 +383,12 @@ public class CommonMapper extends EnumerationMapper{
         return mapped;
     }
 
-    protected static uk.org.ifopt.www.ifopt.CountryRefStructure map(CountryRefStructure countryRefStructure) {
+    protected static uk.org.ifopt.www.ifopt.CountryRefStructure.Builder map(CountryRefStructure countryRefStructure) {
         uk.org.ifopt.www.ifopt.CountryRefStructure.Builder builder = uk.org.ifopt.www.ifopt.CountryRefStructure.newBuilder();
         if (countryRefStructure.getValue() != null) {
             builder.setValue(countryRefStructure.getValue().value());
         }
-        return builder.build();
+        return builder;
     }
 
     protected static CountryRefStructure map(uk.org.ifopt.www.ifopt.CountryRefStructure countryRefStructure) {
@@ -399,7 +399,7 @@ public class CommonMapper extends EnumerationMapper{
         return mapped;
     }
 
-    protected static uk.org.siri.www.siri.LocationStructure map(LocationStructure locationStructure) {
+    protected static uk.org.siri.www.siri.LocationStructure.Builder map(LocationStructure locationStructure) {
         uk.org.siri.www.siri.LocationStructure.Builder builder = uk.org.siri.www.siri.LocationStructure.newBuilder();
         if (locationStructure.getLatitude() != null) {
             builder.setLatitude(locationStructure.getLatitude().doubleValue());
@@ -410,7 +410,7 @@ public class CommonMapper extends EnumerationMapper{
         if (locationStructure.getSrsName() != null && !locationStructure.getSrsName().isEmpty()) {
             builder.setSrsName(locationStructure.getSrsName());
         }
-        return builder.build();
+        return builder;
     }
 
     protected static LocationStructure map(uk.org.siri.www.siri.LocationStructure locationStructure) {
@@ -426,7 +426,7 @@ public class CommonMapper extends EnumerationMapper{
 
     }
 
-    protected static Any map(Element any) {
+    protected static Any.Builder map(Element any) {
         try {
             /*
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -472,7 +472,7 @@ public class CommonMapper extends EnumerationMapper{
 
 
             Any.Builder builder = Any.newBuilder();
-            return builder.build();
+            return builder;
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (TransformerException e) {

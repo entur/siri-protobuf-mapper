@@ -1,399 +1,347 @@
 package org.entur.protobuf.mapper.siri;
 
-import uk.org.siri.siri20.DatedVehicleJourneyRef;
 import uk.org.siri.siri20.EstimatedCall;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri20.EstimatedVehicleJourney;
-import uk.org.siri.siri20.EstimatedVersionFrameStructure;
-import uk.org.siri.siri20.JourneyPatternRef;
-import uk.org.siri.siri20.NaturalLanguagePlaceNameStructure;
-import uk.org.siri.siri20.NaturalLanguageStringStructure;
+import uk.org.siri.siri20.QuayRefStructure;
 import uk.org.siri.siri20.RecordedCall;
-import uk.org.siri.siri20.ServiceFeatureRef;
-import uk.org.siri.siri20.SituationRef;
-import uk.org.siri.siri20.SituationSimpleRef;
-import uk.org.siri.siri20.VehicleJourneyRef;
-import uk.org.siri.siri20.VehicleModesEnumeration;
-import uk.org.siri.www.siri.DatedVehicleJourneyRefStructure;
+import uk.org.siri.siri20.StopAssignmentStructure;
 import uk.org.siri.www.siri.EstimatedCallStructure;
 import uk.org.siri.www.siri.EstimatedVehicleJourneyStructure;
-import uk.org.siri.www.siri.GroupOfLinesRefStructure;
-import uk.org.siri.www.siri.JourneyPatternRefStructure;
-import uk.org.siri.www.siri.QuayRefStructure;
+import uk.org.siri.www.siri.EstimatedVersionFrameStructure;
 import uk.org.siri.www.siri.RecordedCallStructure;
-import uk.org.siri.www.siri.RouteRefStructure;
 import uk.org.siri.www.siri.ServiceFeatureRefStructure;
-import uk.org.siri.www.siri.SimpleContactStructure;
 import uk.org.siri.www.siri.SituationRefStructure;
-import uk.org.siri.www.siri.SituationSimpleRefStructure;
-import uk.org.siri.www.siri.StopAssignmentStructure;
-import uk.org.siri.www.siri.VehicleJourneyRefStructure;
+import uk.org.siri.www.siri.VehicleModesEnumeration;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
 
-    public static uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure map(EstimatedTimetableDeliveryStructure estimatedTimetableDelivery) {
-        final uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure.Builder builder = uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure.newBuilder();
-
-        if (estimatedTimetableDelivery.getEstimatedJourneyVersionFrames() != null) {
-
-            for (EstimatedVersionFrameStructure estimatedJourneyVersionFrame : estimatedTimetableDelivery.getEstimatedJourneyVersionFrames()) {
-                builder.addEstimatedJourneyVersionFrame(map(estimatedJourneyVersionFrame));
-
+    public static EstimatedTimetableDeliveryStructure map(uk.org.siri.www.siri.EstimatedTimetableDeliveryStructure deliveryStructure) {
+        final EstimatedTimetableDeliveryStructure mapped = new EstimatedTimetableDeliveryStructure();
+        final List<EstimatedVersionFrameStructure> estimatedJourneyVersionFrameList = deliveryStructure.getEstimatedJourneyVersionFrameList();
+        if (estimatedJourneyVersionFrameList != null) {
+            for (EstimatedVersionFrameStructure estimatedVersionFrameStructure : estimatedJourneyVersionFrameList) {
+                mapped.getEstimatedJourneyVersionFrames().add(map(estimatedVersionFrameStructure));
             }
         }
-        if (estimatedTimetableDelivery.getResponseTimestamp() != null) {
-            builder.setResponseTimestamp(map(estimatedTimetableDelivery.getResponseTimestamp()));
+        if (deliveryStructure.hasResponseTimestamp()) {
+            mapped.setResponseTimestamp(map(deliveryStructure.getResponseTimestamp()));
         }
-        builder.setVersion(estimatedTimetableDelivery.getVersion());
-        return builder.build();
+        mapped.setVersion(deliveryStructure.getVersion());
+        return mapped;
     }
 
-    private static uk.org.siri.www.siri.EstimatedVersionFrameStructure map(EstimatedVersionFrameStructure estimatedJourneyVersionFrame) {
-        final uk.org.siri.www.siri.EstimatedVersionFrameStructure.Builder builder = uk.org.siri.www.siri.EstimatedVersionFrameStructure.newBuilder();
-        if (estimatedJourneyVersionFrame.getEstimatedVehicleJourneies() != null) {
+    private static uk.org.siri.siri20.EstimatedVersionFrameStructure map(EstimatedVersionFrameStructure estimatedVersionFrameStructure) {
+        final uk.org.siri.siri20.EstimatedVersionFrameStructure mapped = new uk.org.siri.siri20.EstimatedVersionFrameStructure();
+        final List<EstimatedVehicleJourneyStructure> estimatedVehicleJourneyList = estimatedVersionFrameStructure.getEstimatedVehicleJourneyList();
+        for (EstimatedVehicleJourneyStructure estimatedVehicleJourneyStructure : estimatedVehicleJourneyList) {
+            mapped.getEstimatedVehicleJourneies().add(map(estimatedVehicleJourneyStructure));
+        }
+        if (estimatedVersionFrameStructure.hasRecordedAtTime()) {
+            mapped.setRecordedAtTime(map(estimatedVersionFrameStructure.getRecordedAtTime()));
+        }
+        return mapped;
+    }
 
-            for (EstimatedVehicleJourney journey : estimatedJourneyVersionFrame.getEstimatedVehicleJourneies()) {
-                builder.addEstimatedVehicleJourney(map(journey));
+    private static EstimatedVehicleJourney map(EstimatedVehicleJourneyStructure vehicleJourney) {
+        final EstimatedVehicleJourney mapped = new EstimatedVehicleJourney();
+        if (vehicleJourney.hasRecordedAtTime()) {
+            mapped.setRecordedAtTime(map(vehicleJourney.getRecordedAtTime()));
+        }
+        if (vehicleJourney.hasLineRef()) {
+            mapped.setLineRef(map(vehicleJourney.getLineRef()));
+        }
+        if (vehicleJourney.hasDirectionRef()) {
+            mapped.setDirectionRef(map(vehicleJourney.getDirectionRef()));
+        }
+        if (vehicleJourney.hasFramedVehicleJourneyRef()) {
+            mapped.setFramedVehicleJourneyRef(map(vehicleJourney.getFramedVehicleJourneyRef()));
+        }
+        if (vehicleJourney.hasDatedVehicleJourneyRef()) {
+            mapped.setDatedVehicleJourneyRef(map(vehicleJourney.getDatedVehicleJourneyRef()));
+        }
+        if (vehicleJourney.getEstimatedVehicleJourneyCode() != null && !vehicleJourney.getEstimatedVehicleJourneyCode().isEmpty()) {
+            mapped.setEstimatedVehicleJourneyCode(vehicleJourney.getEstimatedVehicleJourneyCode());
+        }
+        mapped.setExtraJourney(vehicleJourney.getExtraJourney());
+        mapped.setCancellation(vehicleJourney.getCancellation());
+        if (vehicleJourney.hasJourneyPatternRef()) {
+            mapped.setJourneyPatternRef(map(vehicleJourney.getJourneyPatternRef()));
+        }
+
+        if (vehicleJourney.getVehicleModeList() != null) {
+            for (VehicleModesEnumeration vehicleMode : vehicleJourney.getVehicleModeList()) {
+                mapped.getVehicleModes().add(map(vehicleMode));
             }
         }
-        if (estimatedJourneyVersionFrame.getRecordedAtTime() != null) {
-            builder.setRecordedAtTime(map(estimatedJourneyVersionFrame.getRecordedAtTime()));
+        if (vehicleJourney.hasRouteRef()) {
+            mapped.setRouteRef(map(vehicleJourney.getRouteRef()));
         }
-        return builder.build();
-    }
-
-    private static EstimatedVehicleJourneyStructure map(EstimatedVehicleJourney journey) {
-        final EstimatedVehicleJourneyStructure.Builder builder = EstimatedVehicleJourneyStructure.newBuilder();
-        if (journey.getRecordedAtTime() != null) {
-            builder.setRecordedAtTime(CommonMapper.map(journey.getRecordedAtTime()));
+        if (vehicleJourney.hasGroupOfLinesRef()) {
+            mapped.setGroupOfLinesRef(map(vehicleJourney.getGroupOfLinesRef()));
         }
-        if (journey.getLineRef() != null) {
-            builder.setLineRef(map(journey.getLineRef()));
+        if (vehicleJourney.hasExternalLineRef()) {
+            mapped.setExternalLineRef(map(vehicleJourney.getExternalLineRef()));
         }
-        if (journey.getDirectionRef() != null) {
-            builder.setDirectionRef(map(journey.getDirectionRef()));
+        if (vehicleJourney.hasOriginRef()) {
+            mapped.setOriginRef(map(vehicleJourney.getOriginRef()));
         }
-        if (journey.getFramedVehicleJourneyRef() != null) {
-            builder.setFramedVehicleJourneyRef(map(journey.getFramedVehicleJourneyRef()));
-        }
-        if (journey.getDatedVehicleJourneyRef() != null) {
-            builder.setDatedVehicleJourneyRef(map(journey.getDatedVehicleJourneyRef()));
-        }
-        if (journey.getEstimatedVehicleJourneyCode() != null) {
-            builder.setEstimatedVehicleJourneyCode(journey.getEstimatedVehicleJourneyCode());
-        }
-
-        builder.setExtraJourney(journey.isExtraJourney() != null && journey.isExtraJourney());
-        builder.setCancellation(journey.isCancellation() != null && journey.isCancellation());
-
-        if (journey.getJourneyPatternRef() != null) {
-            builder.setJourneyPatternRef(map(journey.getJourneyPatternRef()));
-        }
-        if (journey.getVehicleModes() != null) {
-            for (VehicleModesEnumeration vehicleMode : journey.getVehicleModes()) {
-                builder.addVehicleMode(map(vehicleMode));
+        if (vehicleJourney.getOriginNameList() != null) {
+            for (uk.org.siri.www.siri.NaturalLanguagePlaceNameStructure naturalLanguagePlaceNameStructure : vehicleJourney.getOriginNameList()) {
+                mapped.getOriginNames().add(map(naturalLanguagePlaceNameStructure));
             }
         }
-        if (journey.getRouteRef() != null) {
-            builder.setRouteRef(map(journey.getRouteRef()));
+        if (vehicleJourney.hasDestinationRef()) {
+            mapped.setDestinationRef(map(vehicleJourney.getDestinationRef()));
         }
-        if (journey.getGroupOfLinesRef() != null) {
-            builder.setGroupOfLinesRef(map(journey.getGroupOfLinesRef()));
-        }
-        if (journey.getExternalLineRef() != null) {
-            builder.setExternalLineRef(map(journey.getExternalLineRef()));
-        }
-
-        if (journey.getOriginRef() != null) {
-            builder.setOriginRef(map(journey.getOriginRef()));
-        }
-        if (journey.getOriginNames() != null) {
-            for (NaturalLanguagePlaceNameStructure originName : journey.getOriginNames()) {
-                builder.addOriginName(map(originName));
+        if (vehicleJourney.getDestinationNameList() != null) {
+            for (uk.org.siri.www.siri.NaturalLanguageStringStructure naturalLanguageStringStructure : vehicleJourney.getDestinationNameList()) {
+                mapped.getDestinationNames().add(map(naturalLanguageStringStructure));
             }
         }
-        if (journey.getDestinationRef() != null) {
-            builder.setDestinationRef(map(journey.getDestinationRef()));
+        if (vehicleJourney.hasOperatorRef()) {
+            mapped.setOperatorRef(map(vehicleJourney.getOperatorRef()));
         }
-        if (journey.getDestinationNames() != null) {
-            for (NaturalLanguageStringStructure destinationName : journey.getDestinationNames()) {
-                builder.addDestinationName(map(destinationName));
+
+        if (vehicleJourney.hasPublicContact()) {
+            mapped.setPublicContact(map(vehicleJourney.getPublicContact()));
+        }
+
+        if (vehicleJourney.hasOperationsContact()) {
+            mapped.setOperationsContact(map(vehicleJourney.getOperationsContact()));
+        }
+        if (vehicleJourney.getSituationRefList() != null) {
+            for (SituationRefStructure situationRefStructure : vehicleJourney.getSituationRefList()) {
+                mapped.getSituationReves().add(map(situationRefStructure));
             }
         }
-        if (journey.getOperatorRef() != null) {
-            builder.setOperatorRef(map(journey.getOperatorRef()));
+        mapped.setPredictionInaccurate((vehicleJourney.getPredictionInaccurate()));
+
+        mapped.setDataSource(vehicleJourney.getDataSource());
+
+        if (vehicleJourney.getOccupancy() != null) {
+            mapped.setOccupancy(map(vehicleJourney.getOccupancy()));
         }
 
-        if (journey.getPublicContact() != null) {
-            builder.setPublicContact(map(journey.getPublicContact()));
+        if (vehicleJourney.hasBlockRef()) {
+            mapped.setBlockRef(map(vehicleJourney.getBlockRef()));
         }
-        if (journey.getOperationsContact() != null) {
-            builder.setOperationsContact(map(journey.getOperationsContact()));
+
+        if (vehicleJourney.hasVehicleRef()) {
+            mapped.setVehicleRef(map(vehicleJourney.getVehicleRef()));
         }
-        if (journey.getSituationReves() != null) {
-            for (SituationRef situationRef : journey.getSituationReves()) {
-                builder.addSituationRef(map(situationRef));
+        if (vehicleJourney.hasVehicleJourneyRef()) {
+            mapped.setVehicleJourneyRef(map(vehicleJourney.getVehicleJourneyRef()));
+        }
+
+        if (vehicleJourney.getAdditionalVehicleJourneyRefList() != null) {
+            for (uk.org.siri.www.siri.FramedVehicleJourneyRefStructure framedVehicleJourneyRefStructure : vehicleJourney.getAdditionalVehicleJourneyRefList()) {
+                mapped.getAdditionalVehicleJourneyReves().add(map(framedVehicleJourneyRefStructure));
             }
         }
-        builder.setPredictionInaccurate(journey.isPredictionInaccurate() != null && journey.isPredictionInaccurate());
 
-
-        if (journey.getDataSource() != null) {
-            builder.setDataSource(journey.getDataSource());
-        }
-        if (journey.getServiceFeatureReves() != null) {
-            for (ServiceFeatureRef serviceFeatureRef : journey.getServiceFeatureReves()) {
-                builder.addServiceFeatureRef(map(serviceFeatureRef));
+        if (vehicleJourney.getServiceFeatureRefList() != null) {
+            for (ServiceFeatureRefStructure serviceFeatureRefStructure : vehicleJourney.getServiceFeatureRefList()) {
+                mapped.getServiceFeatureReves().add(map(serviceFeatureRefStructure));
             }
         }
-        if (journey.getBlockRef() != null) {
-            builder.setBlockRef(map(journey.getBlockRef()));
+
+        mapped.setMonitored(vehicleJourney.getMonitored());
+
+        if (vehicleJourney.hasRecordedCalls()) {
+            mapped.setRecordedCalls(map(vehicleJourney.getRecordedCalls()));
         }
-        if (journey.getVehicleRef() != null) {
-            builder.setVehicleRef(map(journey.getVehicleRef()));
+
+        if (vehicleJourney.hasEstimatedCalls()) {
+            mapped.setEstimatedCalls(map(vehicleJourney.getEstimatedCalls()));
         }
-        if (journey.getVehicleJourneyRef() != null) {
-            builder.setVehicleJourneyRef(map(journey.getVehicleJourneyRef()));
-        }
-        if (journey.getAdditionalVehicleJourneyReves() != null) {
-            for (uk.org.siri.siri20.FramedVehicleJourneyRefStructure additionalVehicleJourneyRef : journey.getAdditionalVehicleJourneyReves()) {
-                builder.addAdditionalVehicleJourneyRef(map(additionalVehicleJourneyRef));
+
+        mapped.setIsCompleteStopSequence(vehicleJourney.getIsCompleteStopSequence());
+        return mapped;
+    }
+
+    private static EstimatedVehicleJourney.EstimatedCalls map(EstimatedVehicleJourneyStructure.EstimatedCallsType calls) {
+        final EstimatedVehicleJourney.EstimatedCalls mapped = new EstimatedVehicleJourney.EstimatedCalls();
+        final List<EstimatedCallStructure> estimatedCallList = calls.getEstimatedCallList();
+        if (estimatedCallList != null) {
+            for (EstimatedCallStructure estimatedCall : estimatedCallList) {
+                mapped.getEstimatedCalls().add(map(estimatedCall));
             }
         }
-        builder.setMonitored(journey.isMonitored() == null || journey.isMonitored()); // Defaults to 'true' when not set
+        return mapped;
+    }
 
-        if (journey.getRecordedCalls() != null){
-            builder.setRecordedCalls(map(journey.getRecordedCalls()));
+    private static EstimatedCall map(EstimatedCallStructure call) {
+        final EstimatedCall mapped = new EstimatedCall();
+
+        if (call.hasStopPointRef()) {
+            mapped.setStopPointRef(map(call.getStopPointRef()));
         }
-
-        if (journey.getEstimatedCalls() != null) {
-            builder.setEstimatedCalls(map(journey.getEstimatedCalls()));
+        if (call.getOrder() > 0) {
+            mapped.setOrder(BigInteger.valueOf(call.getOrder()));
         }
-
-        if (journey.isIsCompleteStopSequence() != null) {
-            builder.setIsCompleteStopSequence(journey.isIsCompleteStopSequence());
-        }
-
-        if (journey.getExtensions() != null) {
-            //TODO: Extensions are currently ignored
-        }
-
-        return builder.build();
-    }
-
-    private static VehicleJourneyRefStructure.Builder map(VehicleJourneyRef vehicleJourneyRef) {
-        VehicleJourneyRefStructure.Builder builder = VehicleJourneyRefStructure.newBuilder();
-        builder.setValue(vehicleJourneyRef.getValue());
-        return builder;
-    }
-
-    private static SituationRefStructure.Builder map(SituationRef situationRef) {
-        SituationRefStructure.Builder builder = SituationRefStructure.newBuilder();
-        builder.setSituationSimpleRef(map(situationRef.getSituationSimpleRef()));
-        return builder;
-    }
-
-    private static SituationSimpleRefStructure.Builder map(SituationSimpleRef situationSimpleRef) {
-        SituationSimpleRefStructure.Builder builder = SituationSimpleRefStructure.newBuilder();
-        builder.setValue(situationSimpleRef.getValue());
-        return builder;
-    }
-
-    private static SimpleContactStructure.Builder map(uk.org.siri.siri20.SimpleContactStructure publicContact) {
-        SimpleContactStructure.Builder builder = SimpleContactStructure.newBuilder();
-        builder.setPhoneNumber(publicContact.getPhoneNumber());
-        builder.setUrl(publicContact.getUrl());
-        return builder;
-    }
-
-    private static GroupOfLinesRefStructure.Builder map(uk.org.siri.siri20.GroupOfLinesRefStructure groupOfLinesRef) {
-        GroupOfLinesRefStructure.Builder builder = GroupOfLinesRefStructure.newBuilder();
-        builder.setValue(groupOfLinesRef.getValue());
-        return builder;
-    }
-
-    private static RouteRefStructure.Builder map(uk.org.siri.siri20.RouteRefStructure routeRef) {
-        RouteRefStructure.Builder builder = RouteRefStructure.newBuilder();
-        builder.setValue(routeRef.getValue());
-        return builder;
-    }
-
-    private static JourneyPatternRefStructure.Builder map(JourneyPatternRef journeyPatternRef) {
-        JourneyPatternRefStructure.Builder builder = JourneyPatternRefStructure.newBuilder();
-        builder.setValue(journeyPatternRef.getValue());
-        return builder;
-    }
-
-    private static ServiceFeatureRefStructure.Builder map(ServiceFeatureRef serviceFeatureRef) {
-        ServiceFeatureRefStructure.Builder builder = ServiceFeatureRefStructure.newBuilder();
-        builder.setValue(serviceFeatureRef.getValue());
-        return builder;
-    }
-
-    private static DatedVehicleJourneyRefStructure.Builder map(DatedVehicleJourneyRef datedVehicleJourneyRef) {
-        DatedVehicleJourneyRefStructure.Builder builder = DatedVehicleJourneyRefStructure.newBuilder();
-        builder.setValue(datedVehicleJourneyRef.getValue());
-        return builder;
-    }
-
-    private static EstimatedVehicleJourneyStructure.EstimatedCallsType.Builder map(EstimatedVehicleJourney.EstimatedCalls estimatedCalls) {
-        if (estimatedCalls != null && estimatedCalls.getEstimatedCalls() != null) {
-            final EstimatedVehicleJourneyStructure.EstimatedCallsType.Builder builder = EstimatedVehicleJourneyStructure.EstimatedCallsType.newBuilder();
-            for (EstimatedCall call : estimatedCalls.getEstimatedCalls()) {
-                builder.addEstimatedCall(map(call));
-            }
-            return builder;
-        }
-        return null;
-    }
-
-    private static EstimatedCallStructure.Builder map(EstimatedCall call) {
-        final EstimatedCallStructure.Builder builder = EstimatedCallStructure.newBuilder();
-
-        if (call.getStopPointRef() != null) {
-            builder.setStopPointRef(map(call.getStopPointRef()));
-        }
-        if (call.getOrder() != null) {
-            builder.setOrder(call.getOrder().intValue());
-        }
-        if (call.getStopPointNames() != null) {
-            for (NaturalLanguageStringStructure stopPointName : call.getStopPointNames()) {
-                builder.addStopPointName(map(stopPointName));
+        if (call.getStopPointNameList() != null) {
+            for (uk.org.siri.www.siri.NaturalLanguageStringStructure naturalLanguageStringStructure : call.getStopPointNameList()) {
+                mapped.getStopPointNames().add(map(naturalLanguageStringStructure));
             }
         }
-        if (call.getDestinationDisplaies() != null) {
-            for (NaturalLanguageStringStructure destinationDisplay : call.getDestinationDisplaies()) {
-                builder.addDestinationDisplay(map(destinationDisplay));
+        if (call.getExtraCall()) {
+            mapped.setExtraCall(call.getExtraCall());
+        }
+        if (call.getCancellation()) {
+            mapped.setCancellation(call.getCancellation());
+        }
+        if (call.getPredictionInaccurate()) {
+            mapped.setPredictionInaccurate(call.getPredictionInaccurate());
+        }
+        if (call.getRequestStop()) {
+            mapped.setRequestStop(call.getRequestStop());
+        }
+
+        if (call.getDestinationDisplayList() != null) {
+            for (uk.org.siri.www.siri.NaturalLanguageStringStructure destinationDisplay : call.getDestinationDisplayList()) {
+                mapped.getDestinationDisplaies().add(map(destinationDisplay));
             }
         }
-        if (call.isCancellation() != null) {
-            builder.setCancellation(call.isCancellation());
+        if (call.getSituationRefList() != null) {
+            for (SituationRefStructure situationRefStructure : call.getSituationRefList()) {
+                mapped.getSituationReves().add(map(situationRefStructure));
+            }
         }
-        if (call.isExtraCall() != null) {
-            builder.setExtraCall(call.isExtraCall());
+        // Arrival
+        if (call.hasAimedArrivalTime()) {
+            mapped.setAimedArrivalTime(CommonMapper.map(call.getAimedArrivalTime()));
         }
-        if (call.getArrivalPlatformName() != null) {
-            builder.setArrivalPlatformName(map(call.getArrivalPlatformName()));
-        }
-        if (call.getDeparturePlatformName() != null) {
-            builder.setDeparturePlatformName(map(call.getDeparturePlatformName()));
-        }
-        if (call.getAimedArrivalTime() != null) {
-            builder.setAimedArrivalTime(CommonMapper.map(call.getAimedArrivalTime()));
-        }
-        if (call.getAimedDepartureTime() != null) {
-            builder.setAimedDepartureTime(CommonMapper.map(call.getAimedDepartureTime()));
-        }
-        if (call.getExpectedArrivalTime() != null) {
-            builder.setExpectedArrivalTime(CommonMapper.map(call.getExpectedArrivalTime()));
-        }
-        if (call.getExpectedDepartureTime() != null) {
-            builder.setExpectedDepartureTime(CommonMapper.map(call.getExpectedDepartureTime()));
-        }
-        if (call.getArrivalBoardingActivity() != null) {
-            builder.setArrivalBoardingActivity(map(call.getArrivalBoardingActivity()));
-        }
-        if (call.getDepartureBoardingActivity() != null) {
-            builder.setDepartureBoardingActivity(map(call.getDepartureBoardingActivity()));
-        }
-        if (call.getArrivalStopAssignment() != null) {
-            builder.setArrivalStopAssignment(map(call.getArrivalStopAssignment()));
-        }
-        if (call.getDepartureStopAssignment() != null) {
-            builder.setDepartureStopAssignment(map(call.getDepartureStopAssignment()));
-        }
-        if (call.isPredictionInaccurate() != null) {
-            builder.setPredictionInaccurate(call.isPredictionInaccurate());
-        }
-        if (call.isRequestStop() != null) {
-            builder.setRequestStop(call.isRequestStop());
+        if (call.hasExpectedArrivalTime()) {
+            mapped.setExpectedArrivalTime(CommonMapper.map(call.getExpectedArrivalTime()));
         }
         if (call.getArrivalStatus() != null) {
-            builder.setArrivalStatus(map(call.getArrivalStatus()));
+            mapped.setArrivalStatus(map(call.getArrivalStatus()));
+        }
+        if (call.hasArrivalPlatformName()) {
+            mapped.setArrivalPlatformName(map(call.getArrivalPlatformName()));
+        }
+        if (call.getArrivalBoardingActivity() != null) {
+            mapped.setArrivalBoardingActivity(map(call.getArrivalBoardingActivity()));
+        }
+        if (call.hasArrivalStopAssignment()) {
+            mapped.setArrivalStopAssignment(map(call.getArrivalStopAssignment()));
+        }
+
+        //Departure
+        if (call.hasAimedDepartureTime()) {
+            mapped.setAimedDepartureTime(CommonMapper.map(call.getAimedDepartureTime()));
+        }
+        if (call.hasExpectedDepartureTime()) {
+            mapped.setExpectedDepartureTime(CommonMapper.map(call.getExpectedDepartureTime()));
         }
         if (call.getDepartureStatus() != null) {
-            builder.setDepartureStatus(map(call.getDepartureStatus()));
+            mapped.setDepartureStatus(map(call.getDepartureStatus()));
+        }
+        if (call.hasDeparturePlatformName()) {
+            mapped.setDeparturePlatformName(map(call.getDeparturePlatformName()));
+        }
+        if (call.getDepartureBoardingActivity() != null) {
+            mapped.setDepartureBoardingActivity(map(call.getDepartureBoardingActivity()));
+        }
+        if (call.hasDepartureStopAssignment()) {
+            mapped.setDepartureStopAssignment(map(call.getDepartureStopAssignment()));
+        }
+
+
+        if (call.getOccupancy() != null) {
+            mapped.setOccupancy(map(call.getOccupancy()));
+        }
+
+        if (call.hasExtensions()) {
+            // TODO: Extensions are currently ignored
+        }
+        return mapped;
+    }
+
+    private static StopAssignmentStructure map(uk.org.siri.www.siri.StopAssignmentStructure stopAssignment) {
+        final StopAssignmentStructure mapped = new StopAssignmentStructure();
+        if (stopAssignment.hasAimedQuayRef()) {
+            mapped.setAimedQuayRef(map(stopAssignment.getAimedQuayRef()));
+        }
+        if (stopAssignment.hasExpectedQuayRef()) {
+            mapped.setExpectedQuayRef(map(stopAssignment.getExpectedQuayRef()));
+        }
+        if (stopAssignment.hasActualQuayRef()) {
+            mapped.setActualQuayRef(map(stopAssignment.getActualQuayRef()));
+        }
+        return mapped;
+    }
+
+    private static QuayRefStructure map(uk.org.siri.www.siri.QuayRefStructure quayRef) {
+        final QuayRefStructure mapped = new QuayRefStructure();
+        mapped.setValue(quayRef.getValue());
+        return mapped;
+    }
+
+    private static EstimatedVehicleJourney.RecordedCalls map(EstimatedVehicleJourneyStructure.RecordedCallsType calls) {
+        final EstimatedVehicleJourney.RecordedCalls mapped = new EstimatedVehicleJourney.RecordedCalls();
+        final List<RecordedCallStructure> recordedCallList = calls.getRecordedCallList();
+        if (recordedCallList != null) {
+            for (RecordedCallStructure recordedCallStructure : recordedCallList) {
+                mapped.getRecordedCalls().add(map(recordedCallStructure));
+            }
+        }
+        return mapped;
+    }
+
+    private static RecordedCall map(RecordedCallStructure call) {
+        final RecordedCall mapped = new RecordedCall();
+
+        if (call.hasStopPointRef()) {
+            mapped.setStopPointRef(map(call.getStopPointRef()));
+        }
+        if (call.getOrder() > 0) {
+            mapped.setOrder(BigInteger.valueOf(call.getOrder()));
+        }
+        if (call.getStopPointNameList() != null) {
+            for (uk.org.siri.www.siri.NaturalLanguageStringStructure naturalLanguageStringStructure : call.getStopPointNameList()) {
+                mapped.getStopPointNames().add(map(naturalLanguageStringStructure));
+            }
+        }
+
+        if (call.getExtraCall()) {
+            mapped.setExtraCall(call.getExtraCall());
+        }
+
+        if (call.getCancellation()) {
+            mapped.setCancellation(call.getCancellation());
         }
         if (call.getOccupancy() != null) {
-            builder.setOccupancy(map(call.getOccupancy()));
+            mapped.setOccupancy(map(call.getOccupancy()));
         }
-        if (call.getExtensions() != null) {
-            // TODO: Add support for Extensions
-//            builder.setExtensions(mapToJaxb(call.getExtensions()));
+
+        if (call.hasArrivalPlatformName()) {
+            mapped.setArrivalPlatformName(map(call.getArrivalPlatformName()));
         }
-        return builder;
+        if (call.hasDeparturePlatformName()) {
+            mapped.setDeparturePlatformName(map(call.getDeparturePlatformName()));
+        }
+        if (call.hasAimedArrivalTime()) {
+            mapped.setAimedArrivalTime(CommonMapper.map(call.getAimedArrivalTime()));
+        }
+        if (call.hasActualArrivalTime()) {
+            mapped.setActualArrivalTime(CommonMapper.map(call.getActualArrivalTime()));
+        }
+        if (call.hasAimedDepartureTime()) {
+            mapped.setAimedDepartureTime(CommonMapper.map(call.getAimedDepartureTime()));
+        }
+        if (call.hasActualDepartureTime()) {
+            mapped.setActualDepartureTime(CommonMapper.map(call.getActualDepartureTime()));
+        }
+
+        if (call.getPredictionInaccurate()) {
+            mapped.setPredictionInaccurate(call.getPredictionInaccurate());
+        }
+
+        return mapped;
     }
-
-    private static StopAssignmentStructure.Builder map(uk.org.siri.siri20.StopAssignmentStructure stopAssignment) {
-        final StopAssignmentStructure.Builder builder = StopAssignmentStructure.newBuilder();
-        if (stopAssignment.getAimedQuayRef() != null) {
-            builder.setAimedQuayRef(QuayRefStructure.newBuilder().setValue(stopAssignment.getAimedQuayRef().getValue()).build());
-        }
-        if (stopAssignment.getExpectedQuayRef() != null) {
-            builder.setExpectedQuayRef(QuayRefStructure.newBuilder().setValue(stopAssignment.getExpectedQuayRef().getValue()).build());
-        }
-        if (stopAssignment.getActualQuayRef() != null) {
-            builder.setActualQuayRef(QuayRefStructure.newBuilder().setValue(stopAssignment.getActualQuayRef().getValue()).build());
-        }
-        return builder;
-    }
-
-    private static EstimatedVehicleJourneyStructure.RecordedCallsType.Builder map(EstimatedVehicleJourney.RecordedCalls recordedCalls) {
-        if (recordedCalls != null && recordedCalls.getRecordedCalls() != null) {
-            final EstimatedVehicleJourneyStructure.RecordedCallsType.Builder builder = EstimatedVehicleJourneyStructure.RecordedCallsType.newBuilder();
-            for (RecordedCall call : recordedCalls.getRecordedCalls()) {
-                builder.addRecordedCall(map(call));
-            }
-            return builder;
-        }
-        return null;
-    }
-
-    private static RecordedCallStructure.Builder map(RecordedCall call) {
-        final RecordedCallStructure.Builder builder = RecordedCallStructure.newBuilder();
-
-        if (call.getStopPointRef() != null) {
-            builder.setStopPointRef(map(call.getStopPointRef()));
-        }
-        if (call.getOrder() != null) {
-            builder.setOrder(call.getOrder().intValue());
-        }
-        if (call.getStopPointNames() != null) {
-            for (NaturalLanguageStringStructure stopPointName : call.getStopPointNames()) {
-                builder.addStopPointName(map(stopPointName));
-            }
-        }
-        if (call.isCancellation() != null) {
-            builder.setCancellation(call.isCancellation());
-        }
-        if (call.isExtraCall() != null) {
-            builder.setExtraCall(call.isExtraCall());
-        }
-        if (call.getArrivalPlatformName() != null) {
-            builder.setArrivalPlatformName(map(call.getArrivalPlatformName()));
-        }
-        if (call.getDeparturePlatformName() != null) {
-            builder.setDeparturePlatformName(map(call.getDeparturePlatformName()));
-        }
-        if (call.getAimedArrivalTime() != null) {
-            builder.setAimedArrivalTime(CommonMapper.map(call.getAimedArrivalTime()));
-        }
-        if (call.getAimedDepartureTime() != null) {
-            builder.setAimedDepartureTime(CommonMapper.map(call.getAimedDepartureTime()));
-        }
-        if (call.getActualArrivalTime() != null) {
-            builder.setActualArrivalTime(CommonMapper.map(call.getActualArrivalTime()));
-        }
-        if (call.getActualDepartureTime() != null) {
-            builder.setActualDepartureTime(CommonMapper.map(call.getActualDepartureTime()));
-        }
-        if (call.isPredictionInaccurate() != null) {
-            builder.setPredictionInaccurate(call.isPredictionInaccurate());
-        }
-        if (call.getOccupancy() != null) {
-            builder.setOccupancy(map(call.getOccupancy()));
-        }
-        return builder;
-    }
-
 }
