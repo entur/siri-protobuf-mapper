@@ -104,6 +104,12 @@ public class EstimatedTimetableSiri2PbfMapper extends CommonMapper {
             builder.setExternalLineRef(map(journey.getExternalLineRef()));
         }
 
+        if (journey.getPublishedLineNames() != null) {
+            for (NaturalLanguageStringStructure publishedLineName : journey.getPublishedLineNames()) {
+                builder.addPublishedLineName(map(publishedLineName));
+            }
+        }
+
         if (journey.getOriginRef() != null) {
             builder.setOriginRef(map(journey.getOriginRef()));
         }

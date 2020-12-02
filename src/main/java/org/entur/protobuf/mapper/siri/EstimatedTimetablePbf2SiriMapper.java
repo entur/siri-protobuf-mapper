@@ -9,6 +9,7 @@ import uk.org.siri.siri20.StopAssignmentStructure;
 import uk.org.siri.www.siri.EstimatedCallStructure;
 import uk.org.siri.www.siri.EstimatedVehicleJourneyStructure;
 import uk.org.siri.www.siri.EstimatedVersionFrameStructure;
+import uk.org.siri.www.siri.NaturalLanguageStringStructure;
 import uk.org.siri.www.siri.RecordedCallStructure;
 import uk.org.siri.www.siri.ServiceFeatureRefStructure;
 import uk.org.siri.www.siri.SituationRefStructure;
@@ -157,6 +158,12 @@ public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
 
         if (vehicleJourney.hasEstimatedCalls()) {
             mapped.setEstimatedCalls(map(vehicleJourney.getEstimatedCalls()));
+        }
+
+        if (vehicleJourney.getPublishedLineNameList() != null) {
+            for (NaturalLanguageStringStructure publishedLineName : vehicleJourney.getPublishedLineNameList()) {
+                mapped.getPublishedLineNames().add(map(publishedLineName));
+            }
         }
 
         mapped.setIsCompleteStopSequence(vehicleJourney.getIsCompleteStopSequence());

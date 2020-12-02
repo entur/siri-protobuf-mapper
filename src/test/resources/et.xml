@@ -18,6 +18,7 @@
                     </FramedVehicleJourneyRef>
                     <Cancellation>false</Cancellation>
                     <ExtraJourney>false</ExtraJourney>
+                    <PublishedLineName>Test</PublishedLineName>
                     <OperatorRef>Unibuss</OperatorRef>
                     <Monitored>true</Monitored>
                     <PredictionInaccurate>false</PredictionInaccurate>
