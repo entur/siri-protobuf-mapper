@@ -73,7 +73,7 @@ public class EstimatedTimetablePbf2SiriMapper extends CommonMapper {
             mapped.setJourneyPatternRef(map(vehicleJourney.getJourneyPatternRef()));
         }
 
-        if (vehicleJourney.getVehicleModeList() != null) {
+        if (vehicleJourney.getVehicleModeCount() > 0) {
             for (VehicleModesEnumeration vehicleMode : vehicleJourney.getVehicleModeList()) {
                 mapped.getVehicleModes().add(map(vehicleMode));
             }
