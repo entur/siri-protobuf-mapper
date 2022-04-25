@@ -387,6 +387,12 @@ public class EstimatedTimetableSiri2PbfMapper extends CommonMapper {
         if (call.getAimedDepartureTime() != null) {
             builder.setAimedDepartureTime(CommonMapper.map(call.getAimedDepartureTime()));
         }
+        if (call.getExpectedArrivalTime() != null) {
+            builder.setExpectedArrivalTime(CommonMapper.map(call.getExpectedArrivalTime()));
+        }
+        if (call.getExpectedDepartureTime() != null) {
+            builder.setExpectedDepartureTime(CommonMapper.map(call.getExpectedDepartureTime()));
+        }
         if (call.getActualArrivalTime() != null) {
             builder.setActualArrivalTime(CommonMapper.map(call.getActualArrivalTime()));
         }
