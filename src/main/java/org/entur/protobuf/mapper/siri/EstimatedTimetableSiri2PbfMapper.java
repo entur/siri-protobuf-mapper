@@ -180,6 +180,10 @@ public class EstimatedTimetableSiri2PbfMapper extends CommonMapper {
             builder.setIsCompleteStopSequence(journey.isIsCompleteStopSequence());
         }
 
+        if (journey.getOccupancy() != null) {
+            builder.setOccupancy(map(journey.getOccupancy()));
+        }
+
         if (journey.getExtensions() != null) {
             //TODO: Extensions are currently ignored
         }

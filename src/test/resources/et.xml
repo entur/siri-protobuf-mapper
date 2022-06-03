@@ -23,6 +23,7 @@
                     <Monitored>true</Monitored>
                     <PredictionInaccurate>false</PredictionInaccurate>
                     <DataSource>RUT</DataSource>
+                    <Occupancy>seatsAvailable</Occupancy>
                     <BlockRef>12344321</BlockRef>
                     <VehicleRef>101123</VehicleRef>
                     <RecordedCalls>
@@ -30,6 +31,7 @@
                             <StopPointRef>NSR:Quay:6417</StopPointRef>
                             <Order>1</Order>
                             <StopPointName>Fornebu vest</StopPointName>
+                            <Occupancy>seatsAvailable</Occupancy>
                             <AimedDepartureTime>2019-11-14T09:17:00Z</AimedDepartureTime>
                             <ActualDepartureTime>2019-11-14T09:17:00Z</ActualDepartureTime>
                         </RecordedCall>
