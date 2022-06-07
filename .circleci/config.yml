@@ -6,6 +6,38 @@ aliases:
     command: |
       echo "export JFROG_USER=$ARTIFACTORY_USER"  >> $BASH_ENV
       echo "export JFROG_PASS=$ARTIFACTORY_PASSWORD"  >> $BASH_ENV
+
+  - &release
+    name: Release
+    command: |
+      if [ "$(git log -n 1 --pretty="%an")" == "Renovate Bot" ]
+      then
+        echo "Skipping release"
+      else
+      echo "Start release"
+      git config --global user.email "circleci@entur.no"
+      git config --global user.name "circleci"
+      git checkout master
+      mvn gitflow:release-start gitflow:release-finish -DskipTests=true -Prelease -DpostReleaseGoals=deploy -DargLine='-Prelease -DskipTests' -B
+      fi
+
+  - &import_gpg_key
+    name: Configure GPG private key for signing project artifacts in OSS Sonatype
+    command: |
+      echo $SONATYPE_GPG_KEY_BASE64 | base64 --decode | gpg --batch --no-tty --import --yes
+
+  - &maven-settings-file
+      "\"<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd' xmlns='http://maven.apache.org/SETTINGS/1.1.0'
+                xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <servers>
+                <server>
+                  <username>$SONATYPE_USERNAME</username>
+                  <password>$SONATYPE_PASSWORD</password>
+                  <id>ossrh</id>
+                </server>
+              </servers>
+            </settings>\""
+
 jobs:
   build:
     docker:
@@ -20,9 +52,8 @@ jobs:
       - restore_cache:
           keys:
             - dep-cache-v2-{{ checksum "pom.xml" }}
-      - run:
-          name: Download Maven settings
-          command: wget https://raw.githubusercontent.com/entur/circleci-toolbox-image-java11/master/tools/m2/settings.xml -O .circleci/settings.xml
+      - generate-maven-settings-file
+        settings-file: *maven-settings-file
       - run: *jfrog-login
       - run:
           name: Refresh cache
@@ -47,6 +78,10 @@ jobs:
           root: ~/project
           paths:
             - target
+      - run: mvn verify
+      - run: *import_gpg_key
+      - run: *release
+
   deploy:
     docker:
       - image: cimg/openjdk:11.0
