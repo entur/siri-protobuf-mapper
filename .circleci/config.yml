@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 aliases:
   - &jfrog-login
@@ -65,7 +65,7 @@ jobs:
           keys:
             - dep-cache-v2-{{ checksum "pom.xml" }}
       - generate-maven-settings-file
-        settings-file: *maven-settings-file
+          settings-file: *maven-settings-file
       - run: *jfrog-login
       - run:
           name: Refresh cache
