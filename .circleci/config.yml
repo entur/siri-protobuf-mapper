@@ -75,7 +75,7 @@ jobs:
             - ~/.m2
           key: dep-cache-v2-{{ checksum "pom.xml" }}
       # Cannot use -o because of snapshot dependencies.
-      - run: mvn package -s .circleci/settings.xml
+      - run: mvn package
       - run:
           name: Save test results
           command: |
