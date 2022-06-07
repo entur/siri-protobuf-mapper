@@ -62,7 +62,7 @@ jobs:
     steps:
       - checkout
       - generate-maven-settings-file
-        settings-file: *maven-settings-file
+          settings-file: *maven-settings-file
       - restore_cache:
           keys:
             - dep-cache-v2-{{ checksum "pom.xml" }}
