@@ -213,7 +213,7 @@ public class CommonMapper extends EnumerationMapper{
 
     private static LangType map(String lang) {
         if (lang.length() == 3) {
-            lang = lang.substring(0, 1);
+            lang = lang.substring(0, 2);
         }
         return LangType.valueOf("LANG_TYPE_" + lang.toUpperCase());
     }
