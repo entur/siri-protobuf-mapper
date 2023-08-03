@@ -1,20 +1,16 @@
 package org.entur.protobuf.mapper.siri;
 
-import com.google.protobuf.Duration;
 import org.junit.Test;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 
 import static junit.framework.TestCase.assertEquals;
 
 public class CommonMapperTest {
 
     @Test
-    public void testDurationMapping() throws DatatypeConfigurationException {
+    public void testDurationMapping() {
 
-        javax.xml.datatype.Duration duration_1m = DatatypeFactory.newInstance().newDuration("PT60S");
-        javax.xml.datatype.Duration duration_60s = DatatypeFactory.newInstance().newDuration("PT1M");
+        java.time.Duration duration_1m = java.time.Duration.parse("PT60S");
+        java.time.Duration duration_60s = java.time.Duration.parse("PT1M");
 
         assertEquals(duration_1m, duration_60s);
 
@@ -24,10 +20,10 @@ public class CommonMapperTest {
     }
 
     @Test
-    public void testNegativeDurationMapping() throws DatatypeConfigurationException {
+    public void testNegativeDurationMapping() {
 
-        javax.xml.datatype.Duration duration_neg_1m = DatatypeFactory.newInstance().newDuration("-PT60S");
-        javax.xml.datatype.Duration duration_neg_60s = DatatypeFactory.newInstance().newDuration("-PT1M");
+        java.time.Duration duration_neg_1m = java.time.Duration.parse("-PT60S");
+        java.time.Duration duration_neg_60s = java.time.Duration.parse("-PT1M");
 
         assertEquals(duration_neg_1m, duration_neg_60s);
 

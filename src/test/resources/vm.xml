@@ -36,7 +36,7 @@
                         <Longitude>10.690417</Longitude>
                         <Latitude>59.80625</Latitude>
                     </VehicleLocation>
-                    <Delay>PT66S</Delay>
+                    <Delay>PT1M6S</Delay>
                     <BlockRef>Test:1234:12</BlockRef>
                     <VehicleRef>4321</VehicleRef>
                     <MonitoredCall>

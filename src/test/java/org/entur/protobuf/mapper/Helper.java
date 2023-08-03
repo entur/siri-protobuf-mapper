@@ -1,5 +1,8 @@
 package org.entur.protobuf.mapper;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import uk.org.siri.siri20.EstimatedCall;
 import uk.org.siri.siri20.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri20.EstimatedVehicleJourney;
@@ -13,9 +16,6 @@ import uk.org.siri.siri20.SituationSourceStructure;
 import uk.org.siri.siri20.VehicleActivityStructure;
 import uk.org.siri.siri20.VehicleMonitoringDeliveryStructure;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;

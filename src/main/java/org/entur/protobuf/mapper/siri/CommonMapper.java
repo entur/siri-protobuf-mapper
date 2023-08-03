@@ -48,8 +48,6 @@ import uk.org.siri.www.siri.StopPointRefStructure;
 import uk.org.siri.www.siri.VehicleJourneyRefStructure;
 import uk.org.siri.www.siri.VehicleRefStructure;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,34 +67,12 @@ import java.time.ZonedDateTime;
 
 public class CommonMapper extends EnumerationMapper{
 
-    private static DatatypeFactory datatypeFactory;
-
-    static {
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException("Unable to initialize DatatypeFactory", e);
-        }
+    protected static Duration.Builder map(java.time.Duration value)  {
+        return com.google.protobuf.Duration.newBuilder().setSeconds(value.getSeconds());
     }
 
-    protected static Duration.Builder map(javax.xml.datatype.Duration value)  {
-
-        final int seconds = value.getSeconds();
-        final int minutes = value.getMinutes();
-        final int hours = value.getHours();
-        final int days = value.getDays();
-        final int sign = value.getSign(); // Positive or negative duration
-
-        final int totalSeconds = (seconds + minutes*60 + hours*60*60 + days*60*60*24) * sign;
-
-        return com.google.protobuf.Duration.newBuilder().setSeconds(totalSeconds);
-    }
-
-    protected static javax.xml.datatype.Duration map(com.google.protobuf.Duration value) {
-
-        long seconds = value.getSeconds();
-
-        return datatypeFactory.newDuration((seconds < 0 ? "-":"")+"PT"+ Math.abs(seconds) +"S");
+    protected static java.time.Duration map(com.google.protobuf.Duration value) {
+        return java.time.Duration.ofSeconds(value.getSeconds());
     }
 
     protected static Timestamp.Builder map(ZonedDateTime value) {
