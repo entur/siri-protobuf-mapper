@@ -19,7 +19,7 @@
 
     <groupId>org.entur</groupId>
     <artifactId>siri-protobuf-mapper</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -161,12 +161,18 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.10.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M1</version>
+                <configuration>
+                    <argLine>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.owasp</groupId>
@@ -178,14 +184,14 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
 
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <id>default-deploy</id>
@@ -237,7 +243,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>1.6.13</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
